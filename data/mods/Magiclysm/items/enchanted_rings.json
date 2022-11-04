@@ -11,6 +11,7 @@
     "material": [ "copper" ],
     "symbol": "[",
     "color": "light_red",
+    "looks_like": "copper_ring",
     "sided": true,
     "warmth": 0,
     "flags": [ "WATER_FRIENDLY", "ALLOWS_NATURAL_ATTACKS", "FANCY", "ONE_PER_LAYER", "SKINTIGHT" ],
@@ -36,6 +37,7 @@
     "material": [ "silver" ],
     "symbol": "[",
     "color": "light_gray",
+    "looks_like": "silver_ring",
     "sided": true,
     "warmth": 0,
     "flags": [ "WATER_FRIENDLY", "ALLOWS_NATURAL_ATTACKS", "FANCY", "ONE_PER_LAYER", "SKINTIGHT" ],
@@ -61,6 +63,7 @@
     "material": [ "gold" ],
     "symbol": "[",
     "color": "yellow",
+    "looks_like": "gold_ring",
     "sided": true,
     "warmth": 0,
     "flags": [ "WATER_FRIENDLY", "ALLOWS_NATURAL_ATTACKS", "FANCY", "ONE_PER_LAYER", "SKINTIGHT" ],
@@ -86,6 +89,7 @@
     "material": [ "platinum" ],
     "symbol": "[",
     "color": "light_gray",
+    "looks_like": "platinum_ring",
     "sided": true,
     "warmth": 0,
     "flags": [ "WATER_FRIENDLY", "ALLOWS_NATURAL_ATTACKS", "FANCY", "ONE_PER_LAYER", "SKINTIGHT" ],
@@ -101,6 +105,7 @@
   },
   {
     "copy-from": "mring_copper",
+    "looks_like": "mring_copper",
     "type": "TOOL_ARMOR",
     "id": "mring_wizardry_minor",
     "name": { "str": "minor ring of wizardry", "str_pl": "minor rings of wizardry" },
@@ -110,6 +115,7 @@
   },
   {
     "copy-from": "mring_silver",
+    "looks_like": "mring_silver",
     "type": "TOOL_ARMOR",
     "id": "mring_wizardry_lesser",
     "price_postapoc": "2000 USD",
@@ -119,6 +125,7 @@
   },
   {
     "copy-from": "mring_gold",
+    "looks_like": "mring_gold",
     "type": "TOOL_ARMOR",
     "id": "mring_wizardry_moderate",
     "name": { "str": "ring of wizardry", "str_pl": "rings of wizardry" },
@@ -128,6 +135,7 @@
   },
   {
     "copy-from": "mring_platinum",
+    "looks_like": "mring_platinum",
     "type": "TOOL_ARMOR",
     "id": "mring_wizardry_greater",
     "name": { "str": "greater ring of wizardry", "str_pl": "greater rings of wizardry" },
@@ -137,6 +145,7 @@
   },
   {
     "copy-from": "mring_silver",
+    "looks_like": "mring_silver",
     "type": "TOOL_ARMOR",
     "id": "mring_blades_lesser",
     "name": { "str": "ring of blades", "str_pl": "rings of blades" },
@@ -150,6 +159,7 @@
   },
   {
     "copy-from": "mring_silver",
+    "looks_like": "mring_silver",
     "type": "TOOL_ARMOR",
     "id": "mring_dodge_bonus_1",
     "name": "eel ring",
@@ -159,6 +169,7 @@
   },
   {
     "copy-from": "mring_gold",
+    "looks_like": "mring_gold",
     "type": "TOOL_ARMOR",
     "id": "mring_dodge_bonus_2",
     "price_postapoc": "3000 USD",
@@ -168,6 +179,7 @@
   },
   {
     "copy-from": "mring_copper",
+    "looks_like": "mring_copper",
     "type": "TOOL_ARMOR",
     "id": "mring_strength_1",
     "price_postapoc": "1000 USD",
@@ -177,6 +189,7 @@
   },
   {
     "copy-from": "mring_silver",
+    "looks_like": "mring_silver",
     "type": "TOOL_ARMOR",
     "id": "mring_strength_2",
     "price_postapoc": "2000 USD",
@@ -186,6 +199,7 @@
   },
   {
     "copy-from": "mring_gold",
+    "looks_like": "mring_gold",
     "type": "TOOL_ARMOR",
     "id": "mring_strength_3",
     "price_postapoc": "4000 USD",
@@ -195,6 +209,7 @@
   },
   {
     "copy-from": "mring_platinum",
+    "looks_like": "mring_platinum",
     "type": "TOOL_ARMOR",
     "id": "mring_strength_4",
     "price_postapoc": "6000 USD",
@@ -204,6 +219,7 @@
   },
   {
     "copy-from": "mring_copper",
+    "looks_like": "mring_copper",
     "type": "TOOL_ARMOR",
     "id": "mring_dexterity_1",
     "price_postapoc": "1000 USD",
@@ -213,6 +229,7 @@
   },
   {
     "copy-from": "mring_silver",
+    "looks_like": "mring_silver",
     "type": "TOOL_ARMOR",
     "id": "mring_dexterity_2",
     "price_postapoc": "2000 USD",
@@ -222,6 +239,7 @@
   },
   {
     "copy-from": "mring_gold",
+    "looks_like": "mring_gold",
     "type": "TOOL_ARMOR",
     "id": "mring_dexterity_3",
     "price_postapoc": "4000 USD",
@@ -231,6 +249,7 @@
   },
   {
     "copy-from": "mring_platinum",
+    "looks_like": "mring_platinum",
     "type": "TOOL_ARMOR",
     "id": "mring_dexterity_4",
     "price_postapoc": "6000 USD",
@@ -240,6 +259,7 @@
   },
   {
     "copy-from": "mring_copper",
+    "looks_like": "mring_copper",
     "type": "TOOL_ARMOR",
     "id": "mring_intelligence_1",
     "price_postapoc": "1000 USD",
@@ -249,6 +269,7 @@
   },
   {
     "copy-from": "mring_silver",
+    "looks_like": "mring_silver",
     "type": "TOOL_ARMOR",
     "id": "mring_intelligence_2",
     "price_postapoc": "2000 USD",
@@ -258,6 +279,7 @@
   },
   {
     "copy-from": "mring_gold",
+    "looks_like": "mring_gold",
     "type": "TOOL_ARMOR",
     "id": "mring_intelligence_3",
     "price_postapoc": "4000 USD",
@@ -267,6 +289,7 @@
   },
   {
     "copy-from": "mring_platinum",
+    "looks_like": "mring_platinum",
     "type": "TOOL_ARMOR",
     "id": "mring_intelligence_4",
     "price_postapoc": "6000 USD",
@@ -276,6 +299,7 @@
   },
   {
     "copy-from": "mring_copper",
+    "looks_like": "mring_copper",
     "type": "TOOL_ARMOR",
     "id": "mring_perception_1",
     "price_postapoc": "1000 USD",
@@ -285,6 +309,7 @@
   },
   {
     "copy-from": "mring_silver",
+    "looks_like": "mring_silver",
     "type": "TOOL_ARMOR",
     "id": "mring_perception_2",
     "price_postapoc": "2000 USD",
@@ -294,6 +319,7 @@
   },
   {
     "copy-from": "mring_gold",
+    "looks_like": "mring_gold",
     "type": "TOOL_ARMOR",
     "id": "mring_perception_3",
     "price_postapoc": "4000 USD",
@@ -303,6 +329,7 @@
   },
   {
     "copy-from": "mring_platinum",
+    "looks_like": "mring_platinum",
     "type": "TOOL_ARMOR",
     "id": "mring_perception_4",
     "price_postapoc": "6000 USD",
@@ -312,6 +339,7 @@
   },
   {
     "copy-from": "mring_copper",
+    "looks_like": "mring_copper",
     "type": "TOOL_ARMOR",
     "id": "mring_speed_3",
     "price_postapoc": "1700 USD",
@@ -321,6 +349,7 @@
   },
   {
     "copy-from": "mring_silver",
+    "looks_like": "mring_silver",
     "type": "TOOL_ARMOR",
     "id": "mring_speed_5",
     "price_postapoc": "2500 USD",
@@ -330,6 +359,7 @@
   },
   {
     "copy-from": "mring_gold",
+    "looks_like": "mring_gold",
     "type": "TOOL_ARMOR",
     "id": "mring_speed_7",
     "price_postapoc": "5000 USD",
@@ -339,6 +369,7 @@
   },
   {
     "copy-from": "mring_platinum",
+    "looks_like": "mring_platinum",
     "type": "TOOL_ARMOR",
     "id": "mring_speed_10",
     "price_postapoc": "8000 USD",
@@ -348,6 +379,7 @@
   },
   {
     "copy-from": "mring_copper",
+    "looks_like": "mring_copper",
     "type": "TOOL_ARMOR",
     "id": "mring_protection_2",
     "price_postapoc": "1000 USD",
@@ -370,6 +402,7 @@
   },
   {
     "copy-from": "mring_silver",
+    "looks_like": "mring_silver",
     "type": "TOOL_ARMOR",
     "id": "mring_protection_4",
     "price_postapoc": "2000 USD",
@@ -392,6 +425,7 @@
   },
   {
     "copy-from": "mring_gold",
+    "looks_like": "mring_gold",
     "type": "TOOL_ARMOR",
     "id": "mring_protection_6",
     "price_postapoc": "4000 USD",
@@ -414,6 +448,7 @@
   },
   {
     "copy-from": "mring_platinum",
+    "looks_like": "mring_platinum",
     "type": "TOOL_ARMOR",
     "id": "mring_protection_8",
     "price_postapoc": "8000 USD",
@@ -437,6 +472,7 @@
   {
     "type": "TOOL_ARMOR",
     "copy-from": "mring_platinum",
+    "looks_like": "mring_platinum",
     "id": "storage_ring_lesser",
     "name": { "str": "lesser storage ring" },
     "price": "3000 USD",
@@ -460,6 +496,7 @@
   {
     "type": "TOOL_ARMOR",
     "copy-from": "mring_platinum",
+    "looks_like": "mring_platinum",
     "id": "storage_ring_greater",
     "name": { "str": "greater storage ring" },
     "price": "9000 USD",
