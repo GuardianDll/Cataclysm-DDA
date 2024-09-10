@@ -1333,6 +1333,23 @@ std::function<double( dialogue & )> effect_duration_eval( char scope,
     };
 }
 
+#pragma optimize("", off)
+
+std::function<double( dialogue & )> best_tool_eval( char scope,
+        std::vector<diag_value> const &params, diag_kwargs const &kwargs )
+{
+    diag_value radius( static_cast<double>( PICKUP_RANGE ) );
+    if( kwargs.count( "radius" ) != 0 ) {
+        radius = *kwargs.at( "radius" );
+    }
+
+    return[tool_id = params[0], radius, beta = is_beta( scope )]( dialogue const & d ) {
+        return d.actor( beta )->max_quality( quality_id( tool_id.str() ), radius.dbl( d ) );
+    };
+}
+
+#pragma optimize("", on)
+
 std::function<double( dialogue & )> proficiency_eval( char scope,
         std::vector<diag_value> const &params, diag_kwargs const &kwargs )
 {
@@ -1765,6 +1782,7 @@ std::map<std::string_view, dialogue_func_eval> const dialogue_eval_f{
     { "has_flag", { "un", 1, has_flag_eval } },
     { "has_trait", { "un", 1, has_trait_eval } },
     { "has_proficiency", { "un", 1, knows_proficiency_eval } },
+    { "best_tool", { "un", 1, best_tool_eval } },
     { "has_var", { "g", 1, has_var_eval } },
     { "hp", { "un", 1, hp_eval } },
     { "hp_max", { "un", 1, hp_max_eval } },

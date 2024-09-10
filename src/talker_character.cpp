@@ -220,6 +220,11 @@ bool talker_character_const::is_trait_purifiable( const trait_id &trait_to_check
     return me_chr_const->purifiable( trait_to_check );
 }
 
+int talker_character_const::max_quality( const quality_id &quality_id, int radius ) const
+{
+    return me_chr_const->max_quality( quality_id, radius );
+}
+
 bool talker_character_const::has_recipe( const recipe_id &recipe_to_check ) const
 {
     return me_chr_const->knows_recipe( &*recipe_to_check );

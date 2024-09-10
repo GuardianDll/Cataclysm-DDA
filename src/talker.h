@@ -339,6 +339,9 @@ class talker
         virtual effect get_effect( const efftype_id &, const bodypart_id & ) const {
             return effect::null_effect;
         }
+        virtual int max_quality( const quality_id &, int ) const {
+            return 0;
+        }
         virtual bool is_deaf() const {
             return false;
         }
