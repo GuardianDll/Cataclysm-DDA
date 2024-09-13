@@ -1,6 +1,49 @@
 [
   {
     "type": "effect_on_condition",
+    "id": "YYYYYYYYYYYY",
+    "eoc_type": "EVENT",
+    "required_event": "character_ranged_attacks_character",
+    "effect": [
+      {
+        "u_run_inv_eocs": "random",
+        "search_data": [ { "wielded_only": true, "flags": [ "RELOAD_ONE" ] } ],
+        "true_eocs": [ "AAAAAAAAAAAA" ]
+      },
+      { "u_message": "character_ranged_attacks_character" }
+    ]
+  },
+  {
+    "type": "effect_on_condition",
+    "id": "XXXXXXXX",
+    "eoc_type": "EVENT",
+    "required_event": "character_ranged_attacks_monster",
+    "effect": [
+      {
+        "u_run_inv_eocs": "random",
+        "search_data": [ { "wielded_only": true, "flags": [ "RELOAD_ONE" ] } ],
+        "true_eocs": [ "AAAAAAAAAAAA" ]
+      },
+      { "u_message": "character_ranged_attacks_monster" }
+    ]
+  },
+  {
+    "type": "effect_on_condition",
+    "id": "AAAAAAAAAAAA",
+    "//condition": { "and": [ { "compare_string": [ "pistol", { "mutator": "item_skill", "item": { "context_val": "weapon" } } ] } ] },
+    "effect": [ { "u_message": "passed all checks, running AAAAAAAA" }, { "u_add_effect": "TEEEESTTTTT", "duration": "30 seconds" } ]
+  },
+  {
+    "type": "effect_type",
+    "id": "TEEEESTTTTT",
+    "name": [ "EEEEEEEEE" ],
+    "desc": [ "Applied by leap special attack of burned frog zombies, conditional for related spell." ],
+    "max_duration": "5 m",
+    "enchantments": [ { "values": [ { "value": "STRENGTH", "add": 15 }, { "value": "WEAPON_DISPERSION", "multiply": -0.75 } ] } ],
+    "show_in_info": true
+  },
+  {
+    "type": "effect_on_condition",
     "id": "EOC_nether_glass_event",
     "recurrence": "10 seconds",
     "condition": {

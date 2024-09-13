@@ -2035,6 +2035,13 @@ static std::function<T( const dialogue & )> get_get_str_( const JsonObject &jo,
         return [mtypeid, ret_func]( const dialogue & d ) {
             return ret_func( ( static_cast<mtype_id>( mtypeid.evaluate( d ) ) )->default_faction.str() );
         };
+    } else if( mutator == "item_skill" ) {
+        str_or_var skill = get_str_or_var( jo.get_member( "item" ), "item" );
+        return [ret_func, skill]( const dialogue & d ) {
+            item our_item = static_cast<item>( d.cur_item );
+            return ret_func( our_item.is_gun() ? our_item.gun_skill().c_str() :
+                             our_item.melee_skill().c_str() );
+        };
     } else if( mutator == "game_option" ) {
         str_or_var option = get_str_or_var( jo.get_member( "option" ), "option" );
         return [option, ret_func]( const dialogue & d ) {
@@ -2121,7 +2128,8 @@ std::function<translation( const dialogue & )> conditional_t::get_get_translatio
     return ret_func;
 }
 
-std::function<std::string( const dialogue & )> conditional_t::get_get_string( const JsonObject &jo )
+std::function<std::string( const dialogue & )> conditional_t::get_get_string(
+    const JsonObject &jo )
 {
     auto ret_func = get_get_str_<std::string>( jo, []( const std::string & s ) {
         return s;
