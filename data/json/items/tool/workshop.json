@@ -59,11 +59,12 @@
   {
     "id": "angle_grinder",
     "type": "TOOL",
-    "name": { "str": "angle grinder" },
-    "description": "A widespread power tool, often used for removing excess material or polishing surfaces.",
+    "name": { "str": "corded angle grinder" },
+    "description": "A widespread power tool, often used to cut metal, remove excess material, and with variable speed dile, even as polisher.",
+    "//": [ "Makita GA5021, 384 x 139 x 120 mm, volume is halved" ],
     "weight": "2780 g",
-    "volume": "1750 ml",
-    "price": "50 USD",
+    "volume": "3202 ml",
+    "price": "199 USD",
     "price_postapoc": "2 USD 50 cent",
     "to_hit": { "grip": "solid", "length": "short", "surface": "line", "balance": "neutral" },
     "material": [ "steel", "plastic" ],
@@ -71,19 +72,29 @@
     "color": "yellow",
     "charged_qualities": [ [ "GRIND", 2 ], [ "SAW_M", 10 ] ],
     "ammo": [ "battery" ],
-    "charges_per_use": 1,
-    "power_draw": "800 W",
+    "//2": "assuming cutting 24 rebars to shape an entrance or so, each 70 mm2",
+    "charges_per_use": 125,
+    "power_draw": "1050 W",
     "flags": [ "NONCONDUCTIVE", "WATER_BREAK" ],
-    "use_action": { "type": "link_up", "cable_length": 30, "charge_rate": "800 W" },
+    "use_action": { "type": "link_up", "cable_length": 3, "charge_rate": "1050 W" },
+    "melee_damage": { "bash": 2, "cut": 2 }
+  },
+  {
+    "id": "angle_grinder_cordless",
+    "copy-from": "angle_grinder",
+    "type": "TOOL",
+    "name": { "str": "cordless angle grinder" },
+    "description": "A widespread power tool, often used to cut metal, remove excess material, and with variable speed dile, even as polisher.  Works using batteries, which gives it some portability, albeit not for a long.",
+    "//": "usually this are less power hungry, around 650W, but we do not represent decimal power consumption, and there is some time penalty for it being less powerful, so it evens out",
+    "use_action": {  },
     "pocket_data": [
       {
         "pocket_type": "MAGAZINE_WELL",
         "magazine_well": "200 ml",
-        "flag_restriction": [ "BATTERY_MEDIUM" ],
-        "default_magazine": "medium_battery_cell"
+        "flag_restriction": [ "BATTERY_HEAVY" ],
+        "default_magazine": "heavy_battery_cell"
       }
-    ],
-    "melee_damage": { "bash": 2, "cut": 2 }
+    ]
   },
   {
     "type": "GENERIC",

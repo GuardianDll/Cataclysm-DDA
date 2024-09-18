@@ -53,9 +53,10 @@
   {
     "result": "railroad_track_item",
     "type": "uncraft",
-    "activity_level": "BRISK_EXERCISE",
-    "time": "15 m",
-    "qualities": [ { "id": "SAW_M", "level": 2 } ],
+    "activity_level": "MODERATE_EXERCISE",
+    "time": "12 m",
+    "//": "7000 mm2 of surface, 546 secodns to cut once",
+    "tools": [ [ [ "angle_grinder_standard", 550, "LIST" ] ] ],
     "components": [ [ [ "railroad_track_item_half", 2 ] ] ]
   },
   {
@@ -64,6 +65,8 @@
     "activity_level": "MODERATE_EXERCISE",
     "time": "50 m",
     "tools": [ [ [ "angle_grinder", 45 ] ] ],
+    "//": "first horizontal cut of web, 6150 mm2, then 14 cuts by 7000 mm2 each; 8136 seconds total",
+    "//2": "it probably should be handled by oxytorch cutting, but uncraft do not support multiple uncraft recipes",
     "components": [ [ [ "mc_steel_lump", 30 ] ] ]
   },
   {

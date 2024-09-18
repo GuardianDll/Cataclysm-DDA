@@ -7453,9 +7453,10 @@
   {
     "result": "manhole_cover",
     "type": "uncraft",
-    "activity_level": "BRISK_EXERCISE",
+    "activity_level": "MODERATE_EXERCISE",
+    "//": "angle grinder gonna grind it for 30 hours. you don't want to grind 30 hours non stop don't you?",
     "time": "1 h",
-    "tools": [ [ [ "angle_grinder", 50 ] ] ],
+    "tools": [ [ [ "oxy_torch", 1200 ] ] ],
     "components": [ [ [ "lump_cast_iron", 109 ] ] ]
   },
   {

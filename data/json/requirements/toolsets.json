@@ -349,7 +349,7 @@
         [ "masonrysaw_off", 100 ],
         [ "electric_masonrysaw_off", 1320 ]
       ],
-      [ [ "angle_grinder", 200 ], [ "hacksaw", -1 ], [ "reciprocating_saw", 200 ] ]
+      [ [ "angle_grinder_standard", 200, "LIST" ], [ "hacksaw", -1 ], [ "reciprocating_saw", 200 ] ]
     ]
   },
   {
@@ -362,7 +362,7 @@
       { "id": "PRY", "level": 3 },
       { "id": "DIG", "level": 3 }
     ],
-    "tools": [ [ [ "angle_grinder", 200 ] ] ]
+    "tools": [ [ [ "angle_grinder_standard", 200, "LIST" ] ] ]
   },
   {
     "id": "linoleum_removal_standard",
@@ -385,7 +385,7 @@
     "type": "requirement",
     "//": "Tools for removing metal / rebar",
     "qualities": [ { "id": "SAW_M", "level": 2 }, { "id": "GLARE", "level": 1 }, { "id": "PRY", "level": 3 } ],
-    "tools": [ [ [ "angle_grinder", 200 ], [ "oxy_torch", 20 ] ] ]
+    "tools": [ [ [ "angle_grinder_standard", 200, "LIST" ], [ "oxy_torch", 20 ] ] ]
   },
   {
     "id": "cement_removal",
@@ -523,5 +523,17 @@
         [ "hd_tow_cable", -1 ]
       ]
     ]
+  },
+  {
+    "id": "angle_grinder_standard",
+    "type": "requirement",
+    "//": [
+      "power consumption: 1 second of using consumes [1050 W * 1 second ~=] 1 kj of energy",
+      "16x16 mm mild steel block (256mm^2) needs around 20 seconds to be cut (12 seconds for best one, but we count average)",
+      "therefore, cutting 10 * 1 mm of steel sheet would cost 0.78 seconds",
+      "rounding it to 1 second gives us a nice and easy math: 1 second cuts 10 x 1 mm of steel (or just 1 cm for simplicity), or gives 1 second of polishing",
+      "also has a unique ability to round up to nice numbers, writing off some of energy on the polishing process"
+    ],
+    "tools": [ [ [ "angle_grinder", 1 ], [ "angle_grinder_cordless", 1 ] ] ]
   }
 ]

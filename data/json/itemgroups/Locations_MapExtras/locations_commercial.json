@@ -769,7 +769,8 @@
       [ "tourist_table", 5 ],
       [ "chem_hexamine", 5 ],
       [ "esbit_stove", 10 ],
-      [ "angle_grinder", 4 ]
+      { "item": "angle_grinder_cordless", "prob": 2, "charges": [ 0, 500 ] },
+      { "item": "angle_grinder", "prob": 2 }
     ]
   },
   {

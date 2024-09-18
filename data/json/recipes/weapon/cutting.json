@@ -927,7 +927,7 @@
     "autolearn": true,
     "proficiencies": [ { "proficiency": "prof_metalworking" } ],
     "components": [ [ [ "sheet_metal", 1 ] ], [ [ "nuts_bolts", 4 ] ], [ [ "duct_tape", 25 ] ] ],
-    "tools": [ [ [ "angle_grinder", 50 ] ] ],
+    "using": [ [ "angle_grinder_standard", 250 ] ],
     "qualities": [ { "id": "HAMMER", "level": 2 }, { "id": "SAW_M", "level": 2 }, { "id": "DRILL", "level": 2 } ]
   },
   {
@@ -944,9 +944,8 @@
     "autolearn": true,
     "//": "40cm weld",
     "proficiencies": [ { "proficiency": "prof_metalworking" }, { "proficiency": "prof_welding_basic" }, { "proficiency": "prof_welding" } ],
-    "using": [ [ "welding_standard", 40 ] ],
+    "using": [ [ "welding_standard", 40 ], [ "angle_grinder_standard", 250 ] ],
     "components": [ [ [ "sheet_metal", 1 ] ], [ [ "duct_tape", 25 ] ] ],
-    "tools": [ [ [ "angle_grinder", 50 ] ] ],
     "qualities": [ { "id": "HAMMER", "level": 2 }, { "id": "SAW_M", "level": 2 } ]
   },
   {
@@ -966,7 +965,7 @@
       { "proficiency": "prof_carving", "time_multiplier": 1.2, "skill_penalty": 0 }
     ],
     "components": [ [ [ "sheet_metal", 1 ] ], [ [ "nuts_bolts", 4 ] ], [ [ "2x4", 1 ], [ "stick", 1 ] ] ],
-    "tools": [ [ [ "angle_grinder", 50 ] ] ],
+    "using": [ [ "angle_grinder_standard", 400 ] ],
     "qualities": [ { "id": "HAMMER", "level": 2 }, { "id": "SAW_M", "level": 2 }, { "id": "DRILL", "level": 2 } ]
   },
   {
@@ -988,9 +987,8 @@
       { "proficiency": "prof_welding" }
     ],
     "//": "60cm weld",
-    "using": [ [ "welding_standard", 60 ] ],
+    "using": [ [ "welding_standard", 60 ], [ "angle_grinder_standard", 400 ] ],
     "components": [ [ [ "sheet_metal", 1 ] ], [ [ "2x4", 1 ], [ "stick", 1 ] ] ],
-    "tools": [ [ [ "angle_grinder", 50 ] ] ],
     "qualities": [ { "id": "HAMMER", "level": 2 }, { "id": "SAW_M", "level": 2 } ]
   },
   {
@@ -2349,7 +2347,7 @@
       [ [ "nuts_bolts", 4 ] ],
       [ [ "duct_tape", 50 ] ]
     ],
-    "tools": [ [ [ "angle_grinder", 50 ] ] ],
+    "using": [ [ "angle_grinder_standard", 250 ] ],
     "qualities": [ { "id": "HAMMER", "level": 2 }, { "id": "SAW_M", "level": 2 }, { "id": "DRILL", "level": 2 } ]
   },
   {
@@ -2365,9 +2363,8 @@
     "autolearn": true,
     "proficiencies": [ { "proficiency": "prof_metalworking" }, { "proficiency": "prof_welding_basic" }, { "proficiency": "prof_welding" } ],
     "//": "30cm weld",
-    "using": [ [ "welding_standard", 30 ] ],
+    "using": [ [ "welding_standard", 30 ], [ "angle_grinder_standard", 250 ] ],
     "components": [ [ [ "pipe", 2 ] ], [ [ "pipe_fittings", 1 ] ], [ [ "sheet_metal", 1 ] ], [ [ "duct_tape", 50 ] ] ],
-    "tools": [ [ [ "angle_grinder", 50 ] ] ],
     "qualities": [ { "id": "HAMMER", "level": 2 }, { "id": "SAW_M", "level": 2 } ]
   },
   {
