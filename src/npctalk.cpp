@@ -3476,36 +3476,49 @@ talk_effect_fun_t::func f_consume_item_sum( const JsonObject &jo, std::string_vi
         double count_desired;
         double count_present;
         double charges_present;
-
+        Character *you = d.actor( is_npc )->get_character();
+        inventory inventory_and_around = you->crafting_inventory( you->pos(), 6 );
         for( const auto &pair : item_and_amount ) {
             item_to_remove = itype_id( pair.first.evaluate( d ) );
             count_desired = pair.second.evaluate( d );
-            count_present = d.actor( is_npc )->get_amount( item_to_remove );
-            charges_present = d.actor( is_npc )->charges_of( item_to_remove );
+            count_present = inventory_and_around.count_item( item_to_remove );
+            charges_present = inventory_and_around.charges_of( item_to_remove );
             if( charges_present > count_present ) {
                 percent += charges_present / count_desired;
                 // if percent is equal or less than 1, it is safe to remove all charges_present
                 // otherwise loop to remove charges one by one
                 if( percent <= 1 ) {
-                    d.actor( is_npc )->use_charges( item_to_remove, charges_present, true );
-
+                    you->use_charges( item_to_remove, charges_present, 6 );
                     add_msg_debug( debugmode::DF_TALKER,
-                                   "removing item: %s, count_desired: %f, charges_present: %f, percent: %f, removing all",
+                                   "removing charge: %s, count_desired: %f, charges_present: %f, percent: %f, removing all",
                                    item_to_remove.c_str(), count_desired, charges_present, percent );
                 } else {
                     percent -= charges_present / count_desired;
                     while( percent < 1.0f ) {
                         percent += 1 / count_desired;
-                        d.actor( is_npc )->use_charges( item_to_remove, 1, true );
+                        you->use_charges( item_to_remove, 1, 6 );
                         add_msg_debug( debugmode::DF_TALKER,
-                                       "removing item: %s, count_desired: %f, charges_present: %f, percent: %f, removing one by one",
+                                       "removing charge: %s, count_desired: %f, charges_present: %f, percent: %f, removing one by one",
                                        item_to_remove.c_str(), count_desired, charges_present, percent );
                     }
                 }
             } else {
                 percent += count_present / count_desired;
                 if( percent <= 1 ) {
-                    d.actor( is_npc )->use_amount( item_to_remove, count_present );
+
+                    // absolute beast of a code because items don't have a way to remove items in radius
+                    const std::vector<const item *> writing_tools_filter = you->crafting_inventory( you->pos(),
+                            6 ).items_with( [&](
+                    const item & it ) {
+                        return it.typeId() == item_to_remove;
+                    } );
+                    std::vector<item_comp> writing_tools;
+                    writing_tools.reserve( writing_tools_filter.size() );
+                    for( const item *tool : writing_tools_filter ) {
+                        writing_tools.emplace_back( tool->typeId(), 1 );
+                    }
+                    you->consume_items( writing_tools, 1 );
+
                     add_msg_debug( debugmode::DF_TALKER,
                                    "removing item: %s, count_desired: %f, count_present: %f, percent: %f, removing all",
                                    item_to_remove.c_str(), count_desired, count_present, percent );
@@ -3513,7 +3526,22 @@ talk_effect_fun_t::func f_consume_item_sum( const JsonObject &jo, std::string_vi
                     percent -= count_present / count_desired;
                     while( percent < 1.0f ) {
                         percent += 1 / count_desired;
-                        d.actor( is_npc )->use_amount( item_to_remove, 1 );
+
+                        const std::vector<const item *> writing_tools_filter = you->crafting_inventory().items_with( [&](
+                        const item & it ) {
+                            return it.typeId() == item_to_remove;
+                        } );
+
+                        std::vector<item_comp> writing_tools;
+                        writing_tools.reserve( writing_tools_filter.size() );
+                        for( const item *tool : writing_tools_filter ) {
+                            if( percent < 1.0f ) {
+                                percent += 1 / count_desired;
+                                writing_tools.emplace_back( tool->typeId(), 1 );
+                            }
+                        }
+
+                        you->consume_items( writing_tools, 1 );
 
                         add_msg_debug( debugmode::DF_TALKER,
                                        "removing item: %s, count_desired: %f, count_present: %f, percent: %f, removing one by one",

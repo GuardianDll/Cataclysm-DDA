@@ -895,11 +895,14 @@ conditional_t::func f_has_items_sum( const JsonObject &jo, const std::string_vie
         double count_present;
         double charges_present;
         double total_present;
+        Character *you = d.actor( is_npc )->get_character();
+        inventory inventory_and_around = you->crafting_inventory( you->pos(), 7 );
+
         for( const auto &pair : item_and_amount ) {
             item_to_find = itype_id( pair.first.evaluate( d ) );
             count_desired = pair.second.evaluate( d );
-            count_present = d.actor( is_npc )->get_amount( item_to_find );
-            charges_present = d.actor( is_npc )->charges_of( item_to_find );
+            count_present = inventory_and_around.amount_of( item_to_find );
+            charges_present = inventory_and_around.charges_of( item_to_find );
             total_present = std::max( count_present, charges_present );
             percent += total_present / count_desired;
 
