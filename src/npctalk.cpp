@@ -3619,6 +3619,25 @@ talk_effect_fun_t::func f_consume_item( const JsonObject &jo, std::string_view m
     };
 }
 
+
+void consume_item_from_crafting_inv( Character *you, int radius, itype_id item_to_remove,
+                                     double amount )
+{
+    // in theory can be used elsewhere
+    const std::vector<const item *> writing_tools_filter = you->crafting_inventory( you->pos(),
+    radius ).items_with( [&]( const item & it ) {
+        return it.typeId() == item_to_remove;
+    } );
+
+    std::vector<item_comp> writing_tools;
+    writing_tools.reserve( writing_tools_filter.size() );
+    for( const item *tool : writing_tools_filter ) {
+        writing_tools.emplace_back( tool->typeId(), 1 );
+    }
+    you->consume_items( writing_tools, amount );
+
+}
+
 talk_effect_fun_t::func f_consume_item_sum( const JsonObject &jo, std::string_view member,
         const std::string_view, bool is_npc )
 {
@@ -3639,80 +3658,43 @@ talk_effect_fun_t::func f_consume_item_sum( const JsonObject &jo, std::string_vi
 
         itype_id item_to_remove;
         double percent = 0.0f;
-        double count_desired;
+        double amount_desired;
         double count_present;
         double charges_present;
+        int radius = static_cast<int>( PICKUP_RANGE );
         Character *you = d.actor( is_npc )->get_character();
-        inventory inventory_and_around = you->crafting_inventory( you->pos(), 6 );
+        inventory inventory_and_around = you->crafting_inventory( you->pos(), radius );
         for( const auto &pair : item_and_amount ) {
+            double amount_to_remove;
             item_to_remove = itype_id( pair.first.evaluate( d ) );
-            count_desired = pair.second.evaluate( d );
+            amount_desired = pair.second.evaluate( d );
             count_present = inventory_and_around.count_item( item_to_remove );
             charges_present = inventory_and_around.charges_of( item_to_remove );
             if( charges_present > count_present ) {
-                percent += charges_present / count_desired;
-                // if percent is equal or less than 1, it is safe to remove all charges_present
-                // otherwise loop to remove charges one by one
-                if( percent <= 1 ) {
-                    you->use_charges( item_to_remove, charges_present, 6 );
-                    add_msg_debug( debugmode::DF_TALKER,
-                                   "removing charge: %s, count_desired: %f, charges_present: %f, percent: %f, removing all",
-                                   item_to_remove.c_str(), count_desired, charges_present, percent );
+                // branch to handle charges
+
+                percent += charges_present / amount_desired;
+
+                if( percent <= 1.0 ) {
+                    // either lack or just right amount of charges to consume
+                    you->use_charges( item_to_remove, amount_desired, radius );
                 } else {
-                    percent -= charges_present / count_desired;
-                    while( percent < 1.0f ) {
-                        percent += 1 / count_desired;
-                        you->use_charges( item_to_remove, 1, 6 );
-                        add_msg_debug( debugmode::DF_TALKER,
-                                       "removing charge: %s, count_desired: %f, charges_present: %f, percent: %f, removing one by one",
-                                       item_to_remove.c_str(), count_desired, charges_present, percent );
-                    }
+                    // too much charges to consume, consuming only to hit 1.00 percent
+                    amount_to_remove = amount_desired * ( ( percent - 2 ) * -1 );
+                    you->use_charges( item_to_remove, amount_to_remove, radius );
                 }
+
             } else {
-                percent += count_present / count_desired;
-                if( percent <= 1 ) {
+                // branch to handle items
+                percent += count_present / amount_desired;
 
-                    // absolute beast of a code because items don't have a way to remove items in radius
-                    const std::vector<const item *> writing_tools_filter = you->crafting_inventory( you->pos(),
-                            6 ).items_with( [&](
-                    const item & it ) {
-                        return it.typeId() == item_to_remove;
-                    } );
-                    std::vector<item_comp> writing_tools;
-                    writing_tools.reserve( writing_tools_filter.size() );
-                    for( const item *tool : writing_tools_filter ) {
-                        writing_tools.emplace_back( tool->typeId(), 1 );
-                    }
-                    you->consume_items( writing_tools, 1 );
-
-                    add_msg_debug( debugmode::DF_TALKER,
-                                   "removing item: %s, count_desired: %f, count_present: %f, percent: %f, removing all",
-                                   item_to_remove.c_str(), count_desired, count_present, percent );
+                if( percent <= 1.0 ) {
+                    // either lack or just right amount of items to consume
+                    consume_item_from_crafting_inv( you, radius, item_to_remove, count_present );
                 } else {
-                    percent -= count_present / count_desired;
-                    while( percent < 1.0f ) {
-                        percent += 1 / count_desired;
-
-                        const std::vector<const item *> writing_tools_filter = you->crafting_inventory().items_with( [&](
-                        const item & it ) {
-                            return it.typeId() == item_to_remove;
-                        } );
-
-                        std::vector<item_comp> writing_tools;
-                        writing_tools.reserve( writing_tools_filter.size() );
-                        for( const item *tool : writing_tools_filter ) {
-                            if( percent < 1.0f ) {
-                                percent += 1 / count_desired;
-                                writing_tools.emplace_back( tool->typeId(), 1 );
-                            }
-                        }
-
-                        you->consume_items( writing_tools, 1 );
-
-                        add_msg_debug( debugmode::DF_TALKER,
-                                       "removing item: %s, count_desired: %f, count_present: %f, percent: %f, removing one by one",
-                                       item_to_remove.c_str(), count_desired, count_present, percent );
-                    }
+                    // too much items to consume, consuming only to hit 1.00 percent
+                    amount_to_remove = amount_desired * ( ( percent - 2 ) * -1 );
+                    consume_item_from_crafting_inv( you, radius, item_to_remove, amount_to_remove );
                 }
             }
         }
