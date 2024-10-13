@@ -2442,6 +2442,8 @@ class item : public visitable
          */
         int shots_remaining( const Character *carrier ) const;
 
+        // Does this use electrical energy, or is it fueled by something else?
+        bool uses_energy() const;
         /**
          * Energy available from battery/UPS/bionics
          * @param carrier is used for UPS and bionic power.
@@ -2458,6 +2460,7 @@ class item : public visitable
 
 
     private:
+        units::energy energy_per_second() const;
         int ammo_remaining( const std::set<ammotype> &ammo, const Character *carrier = nullptr,
                             bool include_linked = false ) const;
     public:
