@@ -3658,6 +3658,7 @@ talk_effect_fun_t::func f_consume_item_sum( const JsonObject &jo, std::string_vi
 
         itype_id item_to_remove;
         double percent = 0.0f;
+        double ratio = 0.0f;
         double amount_desired;
         double count_present;
         double charges_present;
@@ -3665,7 +3666,7 @@ talk_effect_fun_t::func f_consume_item_sum( const JsonObject &jo, std::string_vi
         Character *you = d.actor( is_npc )->get_character();
         inventory inventory_and_around = you->crafting_inventory( you->pos(), radius );
         for( const auto &pair : item_and_amount ) {
-            double amount_to_remove;
+            int amount_to_remove = 0;
             item_to_remove = itype_id( pair.first.evaluate( d ) );
             amount_desired = pair.second.evaluate( d );
             count_present = inventory_and_around.count_item( item_to_remove );
@@ -3680,7 +3681,17 @@ talk_effect_fun_t::func f_consume_item_sum( const JsonObject &jo, std::string_vi
                     you->use_charges( item_to_remove, amount_desired, radius );
                 } else {
                     // too much charges to consume, consuming only to hit 1.00 percent
-                    amount_to_remove = amount_desired * ( ( percent - 2 ) * -1 );
+
+                    percent -= charges_present / amount_desired;
+                    ratio = charges_present / amount_desired;
+
+                    while( percent < 1.0 ) {
+                        // i can't find how to calculate it without a loop
+                        // am i dumb? :(
+                        percent += ratio / charges_present;
+                        ++amount_to_remove;
+                    }
+
                     you->use_charges( item_to_remove, amount_to_remove, radius );
                 }
 
@@ -3693,7 +3704,15 @@ talk_effect_fun_t::func f_consume_item_sum( const JsonObject &jo, std::string_vi
                     consume_item_from_crafting_inv( you, radius, item_to_remove, count_present );
                 } else {
                     // too much items to consume, consuming only to hit 1.00 percent
-                    amount_to_remove = amount_desired * ( ( percent - 2 ) * -1 );
+
+                    percent -= count_present / amount_desired;
+                    ratio = count_present / amount_desired;
+
+                    while( percent < 1.0 ) {
+                        percent += ratio / count_present;
+                        ++amount_to_remove;
+                    }
+
                     consume_item_from_crafting_inv( you, radius, item_to_remove, amount_to_remove );
                 }
             }
