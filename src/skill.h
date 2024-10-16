@@ -36,6 +36,7 @@ class Skill
 
         translation _name;
         translation _description;
+        std::vector<translation> _level_descriptions;
         std::set<std::string> _tags;
         time_info_t _time_to_attack;
         skill_displayType_id _display_type;
@@ -117,6 +118,9 @@ class Skill
 
         bool is_combat_skill() const;
         bool is_contextual_skill() const;
+        std::string pick_level_description( int skill_lvl ) {
+            return _level_descriptions[skill_lvl].translated();
+        };
 };
 
 class SkillLevel

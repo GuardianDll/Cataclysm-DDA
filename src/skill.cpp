@@ -131,6 +131,13 @@ void Skill::load_skill( const JsonObject &jsobj )
     for( JsonObject jo_csp : jsobj.get_array( "companion_skill_practice" ) ) {
         companion_skill_practice.emplace( jo_csp.get_string( "skill" ), jo_csp.get_int( "weight" ) );
     }
+
+    std::vector<translation> level_descriptions;
+    // for( JsonValue jv : jsobj.get_array( "level_descriptions" ) ) {
+    //     level_descriptions.emplace_back( jv );
+    // }
+    level_descriptions.emplace_back( jsobj.get_array( "level_descriptions" ) );
+
     time_info_t time_to_attack;
     if( jsobj.has_object( "time_to_attack" ) ) {
         JsonObject jso_tta = jsobj.get_object( "time_to_attack" );
@@ -152,6 +159,7 @@ void Skill::load_skill( const JsonObject &jsobj )
     sk._companion_survival_rank_factor = jsobj.get_int( "companion_survival_rank_factor", 0 );
     sk._companion_industry_rank_factor = jsobj.get_int( "companion_industry_rank_factor", 0 );
     sk._companion_skill_practice = companion_skill_practice;
+    sk._level_descriptions = level_descriptions;
     sk._obsolete = jsobj.get_bool( "obsolete", false );
     sk._teachable = jsobj.get_bool( "teachable", true );
 
@@ -248,6 +256,11 @@ bool Skill::is_contextual_skill() const
 {
     static const std::string contextual_skill( "contextual_skill" );
     return _tags.count( contextual_skill ) > 0;
+}
+
+std::string Skill::pick_level_description( int skill_lvl )
+{
+    return _level_descriptions[skill_lvl].translated();
 }
 
 void SkillLevel::train( int amount, float catchup_modifier, float knowledge_modifier,
