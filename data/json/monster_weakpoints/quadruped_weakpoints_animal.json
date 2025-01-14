@@ -13,28 +13,29 @@
         "coverage_mult": { "ranged": 0.75 },
         "coverage": 3,
         "effects": [
+          { "effect": "stunned", "duration": [ 1, 2 ], "message": "The %s is stunned!", "damage_required": [ 1, 10 ] },
           {
             "effect": "stunned",
             "duration": [ 1, 2 ],
-            "chance": 5,
-            "message": "The %s is stunned!",
-            "damage_required": [ 1, 10 ]
-          },
-          {
-            "effect": "stunned",
-            "duration": [ 1, 2 ],
-            "chance": 25,
             "message": "The %s is stunned!",
             "damage_required": [ 11, 50 ]
           },
           {
             "effect": "stunned",
             "duration": [ 1, 2 ],
-            "chance": 45,
             "message": "The %s is stunned!",
             "damage_required": [ 51, 100 ]
           }
         ]
+      },
+      {
+        "name": "the brain",
+        "armor_mult": { "physical": 0.45 },
+        "difficulty": { "ranged": 4 },
+        "damage_mult": { "physical": 2 },
+        "coverage_mult": { "melee": 0 },
+        "coverage": 3,
+        "effects": [ { "instant_death_chance": 100, "message": "The %s got a brain trauma, and drops dead!" } ]
       },
       {
         "name": "the eye",
@@ -45,11 +46,10 @@
         "coverage_mult": { "ranged": 0.5 },
         "difficulty": { "melee": 10, "ranged": 10 },
         "effects": [
-          { "effect": "blind", "duration": [ 1, 2 ], "chance": 25, "message": "The %s is blinded!", "damage_required": [ 1, 25 ] },
+          { "effect": "blind", "duration": [ 1, 2 ], "message": "The %s is blinded!", "damage_required": [ 1, 25 ] },
           {
             "effect": "blind",
             "permanent": true,
-            "chance": 30,
             "message": "The %s's eyes are obliterated!",
             "damage_required": [ 26, 100 ]
           }
@@ -63,36 +63,73 @@
         "coverage": 18
       },
       {
+        "name": "the heart",
+        "armor_mult": { "physical": 0.45 },
+        "difficulty": { "ranged": 4 },
+        "damage_mult": { "physical": 2 },
+        "coverage_mult": { "melee": 0 },
+        "//": "todo: restrict ranged by damage type, throwing rock to hit a heart is unacceptable",
+        "coverage": 3,
+        "effects": [
+          {
+            "effect": "bleed",
+            "intensity": [ 25, 40 ],
+            "permanent": true,
+            "message": "The %s got shot in the heart!",
+            "damage_required": [ 1, 100 ]
+          },
+          {
+            "//": "since both heart and lungs are generally close to each other, you can hit both in the same attack",
+            "effect": "lung_collapse",
+            "intensity": [ 1, 2 ],
+            "chance": 80,
+            "permanent": true,
+            "message": "The %s has it's lung penetrated!",
+            "damage_required": [ 1, 100 ]
+          }
+        ]
+      },
+      {
+        "name": "the lungs",
+        "armor_mult": { "physical": 0.45 },
+        "difficulty": { "ranged": 4 },
+        "damage_mult": { "physical": 2 },
+        "coverage_mult": { "melee": 0 },
+        "coverage": 4,
+        "effects": [
+          {
+            "effect": "lung_collapse",
+            "intensity": [ 5, 10 ],
+            "permanent": true,
+            "message": "The %s has it's lung penetrated!",
+            "damage_required": [ 1, 100 ]
+          },
+          {
+            "//": "see heart",
+            "effect": "bleed",
+            "intensity": [ 25, 40 ],
+            "permanent": true,
+            "chance": 60,
+            "message": "The %s got shot in the heart!",
+            "damage_required": [ 1, 100 ]
+          }
+        ]
+      },
+      {
         "name": "the vitals",
         "armor_mult": { "physical": 0.45 },
         "difficulty": { "ranged": 4 },
         "damage_mult": { "physical": 2 },
         "coverage_mult": { "melee": 0 },
-        "coverage": 7,
+        "coverage": 6,
+        "//": "rest of internal organs, that would make monster die, but not as fast",
         "effects": [
           {
             "effect": "bleed",
-            "intensity": [ 10, 15 ],
-            "duration": [ 10, 20 ],
-            "chance": 75,
+            "intensity": [ 10, 22 ],
+            "permanent": true,
             "message": "The %s is shot in the vitals!",
-            "damage_required": [ 1, 10 ]
-          },
-          {
-            "effect": "bleed",
-            "intensity": [ 20, 30 ],
-            "duration": [ 20, 30 ],
-            "chance": 85,
-            "message": "The %s is shot in the vitals!",
-            "damage_required": [ 11, 50 ]
-          },
-          {
-            "effect": "bleed",
-            "intensity": [ 30, 40 ],
-            "duration": [ 30, 40 ],
-            "chance": 95,
-            "message": "The %s is shot in the vitals!",
-            "damage_required": [ 51, 100 ]
+            "damage_required": [ 1, 100 ]
           }
         ]
       },
@@ -101,8 +138,8 @@
         "difficulty": { "melee": 1, "ranged": 2 },
         "coverage_mult": { "point": 0.75 },
         "effects": [
-          { "effect": "staggered", "chance": 25, "message": "The %s is knocked off-balance!", "damage_required": [ 10, 25 ] },
-          { "effect": "downed", "chance": 33, "message": "The %s is knocked down!", "damage_required": [ 26, 100 ] }
+          { "effect": "staggered", "message": "The %s is knocked off-balance!", "damage_required": [ 1, 25 ] },
+          { "effect": "downed", "message": "The %s is knocked down!", "damage_required": [ 26, 100 ] }
         ],
         "coverage": 16
       }

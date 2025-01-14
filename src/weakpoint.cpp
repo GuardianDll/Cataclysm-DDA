@@ -289,6 +289,10 @@ void weakpoint_effect::apply_to( Creature &target, int total_damage,
         eoc->activate( d );
     }
 
+    if ( x_in_y( rng( instant_death_chance.first, instant_death_chance.second ), 100) ) {
+        target.die( attack.source == nullptr ? nullptr : attack.source );
+    }
+
     if( !get_message().empty() && attack.source != nullptr && attack.source->is_avatar() ) {
         add_msg_if_player_sees( target, m_good, get_message(), target.get_name() );
     }
@@ -299,8 +303,10 @@ void weakpoint_effect::load( const JsonObject &jo )
     if( jo.has_string( "effect" ) ) {
         assign( jo, "effect", effect );
     }
-    if( jo.has_array( "effect_on_conditions" ) ) {
-        assign( jo, "effect_on_conditions", effect_on_conditions );
+    if( jo.has_member( "effect_on_conditions" ) ) {
+        for ( JsonValue jv : jo.get_array( "effect_on_conditions" ) ) {
+            effect_on_conditions.push_back( effect_on_conditions::load_inline_eoc( jv, "" ));
+        }
     }
     if( jo.has_float( "chance" ) ) {
         assign( jo, "chance", chance, false, 0.0f, 100.0f );
@@ -324,6 +330,12 @@ void weakpoint_effect::load( const JsonObject &jo )
         intensity = {i, i};
     } else if( jo.has_array( "intensity" ) ) {
         assign( jo, "intensity", intensity );
+    }
+    if( jo.has_int( "instant_death_chance" ) ) {
+        int i = jo.get_int( "instant_death_chance", 0 );
+        instant_death_chance = {i, i};
+    } else if( jo.has_array( "instant_death_chance" ) ) {
+        assign( jo, "instant_death_chance", instant_death_chance );
     }
     if( jo.has_float( "damage_required" ) ) {
         float f = jo.get_float( "damage_required", 0.0f );

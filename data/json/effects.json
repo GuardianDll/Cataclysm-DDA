@@ -3010,6 +3010,19 @@
   },
   {
     "type": "effect_type",
+    "id": "lung_collapse",
+    "name": [ "Lung Collapse" ],
+    "desc": [ "Your have difficulties breathing!" ],
+    "rating": "bad",
+    "max_intensity": 2,
+    "//": "intensity 1 - one of two lungs is collapsed; intensity 2 - both lungs are collapsed",
+    "base_mods": { "dex_mod": [ -4 ], "speed_mod": [ -35 ], "hurt_amount": [ 1 ], "hurt_tick": [ 4 ] },
+    "scaling_mods": { "speed_mod": [ -35 ], "dex_mod": [ -4 ] },
+    "chance_kill": [ [ 0, 1 ], [ 1, 120 ] ],
+    "show_in_info": true
+  },
+  {
+    "type": "effect_type",
     "id": "slimed",
     "name": [ "Slimed" ],
     "desc": [ "You're covered in thick goo!" ],

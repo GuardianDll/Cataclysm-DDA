@@ -3325,7 +3325,9 @@ void monster::process_one_effect( effect &it, bool is_new )
     } else if( ( id == effect_bleed || id == effect_dripping_mechanical_fluid ) &&
                x_in_y( it.get_intensity(), it.get_max_intensity() ) ) {
         // this is for balance only
-        it.mod_duration( -rng( 1_turns, it.get_int_dur_factor() / 2 ) );
+        if( !it.is_permanent() ) {
+            it.mod_duration( -rng( 1_turns, it.get_int_dur_factor() / 2 ) );
+        }
         bleed();
         if( id == effect_bleed ) {
             // monsters are simplified so they just take damage from bleeding

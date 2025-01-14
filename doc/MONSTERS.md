@@ -362,12 +362,13 @@ The `effects` field is a list of objects with the following subfields:
 Field              | Description
 ---                | ---
 `effect`           | The effect type.
-`effect_on_conditions` | Array of EoCs that would be run. `u_` is attacker (if presented, use `has_alpha` condition for safety), `npc_` is victim. See EFFECT_ON_CONDITION.md for more information
+`effect_on_conditions` | Array of EoC ids or inline EoCs that would be run. `u_` is attacker (if presented, use `has_alpha` condition for safety), `npc_` is victim. See EFFECT_ON_CONDITION.md for more information
 `chance`           | The probability of causing the effect.
 `duration`         | The duration of the effect. Either a (min, max) pair or a single value.
 `permanent`        | Whether the effect is permanent.
 `intensity`        | The intensity of the effect. Either a (min, max) pair or a single value.
 `damage_required`  | The range of damage, as a percentage of max health, required to trigger the effect.
+`instant_death_chance` | Probability out of 100 to instantly kill a monster, if this weakpoint is hit
 `message`          | The message to print, if the player triggers the effect. Should take a single template parameter, referencing the monster's name.
 
 The `coverage_mult` and `difficulty` objects support the following subfields:

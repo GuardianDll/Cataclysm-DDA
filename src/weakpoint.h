@@ -76,6 +76,8 @@ struct weakpoint_effect {
     std::pair<int, int> intensity;
     // The range of damage, as a percentage of max health, required to the effect.
     std::pair<float, float> damage_required;
+    // Chance to instantly kill the monster on attack.
+    std::pair<int, int> instant_death_chance;
     // The message to print, if the player causes the effect.
     translation message;
 
