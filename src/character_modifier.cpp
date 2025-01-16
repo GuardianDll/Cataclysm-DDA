@@ -137,7 +137,7 @@ void character_modifier::load( const JsonObject &jo, const std::string_view )
         optional( jobj, was_loaded, "limb_score_op", lsop, "*" );
         limbscore_modop = string_to_modtype( lsop );
 
-        optional( jobj, was_loaded, "limb_type", limbtype, body_part_type::type::num_types );
+        optional( jobj, was_loaded, "limb_type", limbtype, body_part_type::type::last );
         if( jobj.has_member( "override_encumb" ) ) {
             bool over;
             mandatory( jobj, was_loaded, "override_encumb", over );
@@ -168,7 +168,7 @@ float Character::manipulator_score( const std::map<bodypart_str_id, bodypart> &b
 {
     std::map<body_part_type::type, std::vector<std::pair<bodypart, float>>> bodypart_groups;
     std::vector<float> score_groups;
-    const bool required_type = type != body_part_type::type::num_types;
+    const bool required_type = type != body_part_type::type::last;
     const bool local_effect = has_flag( flag_EFFECT_LIMB_SCORE_MOD_LOCAL );
     for( const std::pair<const bodypart_str_id, bodypart> &id : body ) {
         if( required_type ) {
@@ -177,7 +177,7 @@ float Character::manipulator_score( const std::map<bodypart_str_id, bodypart> &b
                     bodypart_groups[ bp_type.first ].emplace_back( id.second, bp_type.second );
                 }
             }
-        } else if( id.first->primary_limb_type() != body_part_type::type::num_types ) {
+        } else if( id.first->primary_limb_type() != body_part_type::type::last ) {
             bodypart_groups[ id.first->primary_limb_type() ].emplace_back( id.second,
                     id.first->limbtypes.at( id.first->primary_limb_type() ) );
         }
@@ -243,7 +243,7 @@ float Character::get_limb_score( const limb_score_id &score, const body_part_typ
     bool cache_flag_EFFECT_LIMB_SCORE_MOD_LOCAL = has_flag( flag_EFFECT_LIMB_SCORE_MOD_LOCAL );
     for( const std::pair<const bodypart_str_id, bodypart> &id : body ) {
         float mod = 0.0f;
-        if( bp == body_part_type::type::num_types ) {
+        if( bp == body_part_type::type::last ) {
             mod = id.second.get_limb_score( score, skill, override_encumb, override_wounds );
         } else if( id.first->has_type( bp ) ) {
             mod = id.second.get_limb_score( score, skill, override_encumb,

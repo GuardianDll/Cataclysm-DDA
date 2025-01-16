@@ -28,6 +28,7 @@
 #include "damage.h"
 #include "debug.h"
 #include "effect.h"
+#include "enum_conversions.h"
 #include "enum_traits.h"
 #include "enums.h"
 #include "event.h"
@@ -2405,6 +2406,22 @@ static void set_part_helper( Creature &c, const bodypart_id &id,
         ( part->*set )( val );
     }
 }
+
+// *INDENT-OFF*
+template<>
+std::string enum_to_string<get_body_part_flags>(get_body_part_flags data)
+{
+    switch ( data ) {
+    case get_body_part_flags::none: return "NONE";
+    case get_body_part_flags::only_main: return "ONLY_MAIN";
+    case get_body_part_flags::sorted: return "SORTED";
+    case get_body_part_flags::primary_type: return "PRIMARY_TYPE";
+    case get_body_part_flags::only_minor: return "ONLY_MINOR";
+    case get_body_part_flags::last: break;
+    }
+    cata_fatal("Invalid body part flag type.");
+}
+// *INDENT-ON*
 
 bodypart_id Creature::get_part_id( const bodypart_id &id,
                                    body_part_filter filter, bool suppress_debugmsg ) const

@@ -1295,6 +1295,12 @@ const
     return me_chr_const->get_all_body_parts( flags );
 }
 
+std::vector<bodypart_id> talker_character_const::get_all_body_parts_of_type(
+    body_part_type::type type, get_body_part_flags flags ) const
+{
+    return me_chr_const->get_all_body_parts_of_type( type, flags );
+}
+
 int talker_character_const::get_part_hp_cur( const bodypart_id &id ) const
 {
     return me_chr_const->get_part_hp_cur( id );

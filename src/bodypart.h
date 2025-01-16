@@ -199,7 +199,7 @@ struct body_part_type {
             tail,
             // more of a general purpose limb, such as horns.
             other,
-            num_types
+            last
         };
 
         std::vector<std::pair<bodypart_str_id, mod_id>> src;
@@ -324,7 +324,7 @@ struct body_part_type {
 
     private:
         int bionic_slots_ = 0;
-        body_part_type::type _primary_limb_type = body_part_type::type::num_types;
+        body_part_type::type _primary_limb_type = body_part_type::type::last;
         // Protection from various damage types
         resistances armor;
 
@@ -387,7 +387,7 @@ struct body_part_type {
 
 template<>
 struct enum_traits<body_part_type::type> {
-    static constexpr body_part_type::type last = body_part_type::type::num_types;
+    static constexpr body_part_type::type last = body_part_type::type::last;
 };
 
 struct layer_details {

@@ -1468,7 +1468,7 @@ class Character : public Creature, public visitable
         // Get the specified limb score. If bp is defined, only the scores from that body part type are summed.
         // override forces the limb score to be affected by encumbrance/wounds (-1 == no override).
         float get_limb_score( const limb_score_id &score,
-                              const body_part_type::type &bp = body_part_type::type::num_types,
+                              const body_part_type::type &bp = body_part_type::type::last,
                               int override_encumb = -1, int override_wounds = -1 ) const;
         float manipulator_score( const std::map<bodypart_str_id, bodypart> &body,
                                  body_part_type::type type, int override_encumb, int override_wounds ) const;

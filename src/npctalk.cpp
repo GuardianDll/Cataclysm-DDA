@@ -5944,6 +5944,114 @@ talk_effect_fun_t::func f_run_eoc_selector( const JsonObject &jo, std::string_vi
     };
 }
 
+talk_effect_fun_t::func f_run_bodypart_selector( const JsonObject &jo, std::string_view member,
+        const std::string_view src, bool is_npc )
+{
+    std::vector<eoc_entry> eocs = load_eoc_vector_id_and_var( jo, member, src );
+    translation_or_var eoc_name = get_translation_or_var( jo.get_member( "name" ), "name", true );
+    std::optional<translation_or_var> eoc_description = get_translation_or_var(
+                jo.get_member( "description" ), "description", true );
+
+    std::vector<std::unordered_map<std::string, str_translation_or_var>> context;
+    if( jo.has_array( "variables" ) ) {
+        for( const JsonValue &member : jo.get_array( "variables" ) ) {
+            const JsonObject &variables = member.get_object();
+            std::unordered_map<std::string, str_translation_or_var> temp_context;
+            for( const JsonMember &jv : variables ) {
+                temp_context[jv.name()] = get_str_translation_or_var( jv, jv.name(), true );
+            }
+            context.emplace_back( temp_context );
+        }
+    }
+
+    bool allow_cancel = false;
+    if( jo.has_bool( "allow_cancel" ) ) {
+        allow_cancel = jo.get_bool( "allow_cancel" );
+    }
+
+    str_or_var var_type = get_str_or_var( jo.get_member( "type" ), "type", false );
+    str_or_var var_flag = get_str_or_var( jo.get_member( "type" ), "type", false, "only_main" );
+    translation title = to_translation( "Select an option." );
+    jo.read( "title", title );
+
+    return [eocs, context, title, eoc_name, eoc_description, allow_cancel, var_type, var_flag,
+          is_npc]( dialogue & d ) {
+        uilist limb_list;
+
+        std::unique_ptr<talker> default_talker = get_talker_for( get_player_character() );
+        talker &alpha = d.has_alpha ? *d.actor( false ) : *default_talker;
+        talker &beta = d.has_beta ? *d.actor( true ) : *default_talker;
+
+        limb_list.text = title.translated();
+        limb_list.allow_cancel = allow_cancel;
+        limb_list.desc_enabled = !eoc_description.has_value();
+        parse_tags( limb_list.text, alpha, beta, d );
+
+        for( eoc_entry eoc : eocs ) {
+            if( eoc.id->test_condition( d ) ) {
+                // terminate if any of EoC condition is failing
+                return;
+            };
+        }
+
+        std::vector<bodypart_id> bp_ids;
+        const get_body_part_flags flag = io::string_to_enum<get_body_part_flags>( var_flag.evaluate( d ) );
+        if( var_type.evaluate( d ) != "" ) {
+            const body_part_type::type t = io::string_to_enum<body_part_type::type>( var_type.evaluate( d ) );
+            bp_ids = d.actor( is_npc )->get_all_body_parts_of_type( t, flag );
+        } else {
+            bp_ids = d.actor( is_npc )->get_all_body_parts( flag );
+        }
+
+        for( size_t i = 0; i < bp_ids.size(); i++ ) {
+
+            auto wrap60 = []( const std::string & text ) {
+                return string_join( foldstring( text, 60 ), "\n" );
+            };
+
+            std::string name = eoc_name.evaluate( d );
+            parse_tags( name, alpha, beta, d );
+
+            std::string description;
+            if( !eoc_description.has_value() ) {
+                description = eoc_description.value().evaluate( d );
+                parse_tags( description, alpha, beta, d );
+                description = wrap60( description );
+            }
+
+            limb_list.entries.emplace_back( static_cast<int>( i ), true, std::nullopt, name, description );
+        }
+
+        if( limb_list.entries.empty() ) {
+            // if we have no entries should exit with error
+            debugmsg( "No options for bodypart_selector" );
+            return;
+        }
+
+        limb_list.query();
+        if( limb_list.ret < 0 ) {
+            return;
+        }
+
+        // add context variables
+        dialogue newDialog( d );
+        int contextIndex = 0;
+        if( context.size() > 1 ) {
+            contextIndex = limb_list.ret;
+        }
+        if( !context.empty() ) {
+            for( const auto &val : context[contextIndex] ) {
+                newDialog.set_value( val.first, val.second.evaluate( d ) );
+            }
+        }
+
+        effect_on_condition_id chosen_eoc_id =
+            eocs[limb_list.ret].var ? effect_on_condition_id( eocs[limb_list.ret].var->evaluate(
+                        d ) ) : eocs[limb_list.ret].id;
+        chosen_eoc_id->activate( newDialog );
+    };
+}
+
 talk_effect_fun_t::func f_run_npc_eocs( const JsonObject &jo,
                                         std::string_view member, const std::string_view src, bool is_npc )
 {
@@ -7292,6 +7400,7 @@ parsers = {
     { "offer_mission", jarg::array | jarg::string, &talk_effect_fun::f_offer_mission },
     { "run_eocs", jarg::member | jarg::array, &talk_effect_fun::f_run_eocs },
     { "run_eoc_selector", jarg::member, &talk_effect_fun::f_run_eoc_selector },
+    { "u_run_bp_selector", "npc_run_bp_selector", jarg::member, &talk_effect_fun::f_run_bodypart_selector },
     { "weighted_list_eocs", jarg::array, &talk_effect_fun::f_weighted_list_eocs },
     { "if", jarg::member, &talk_effect_fun::f_if },
     { "switch", jarg::member, &talk_effect_fun::f_switch },

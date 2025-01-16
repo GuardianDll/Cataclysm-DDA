@@ -59,7 +59,7 @@ struct character_modifier {
         std::map<limb_score_id, float> limbscores;
         mod_type limbscore_modop = MULT;
         std::vector<std::pair<character_modifier_id, mod_id>> src;
-        body_part_type::type limbtype = body_part_type::type::num_types;
+        body_part_type::type limbtype = body_part_type::type::last;
         translation desc = translation();
         mod_type modtype = mod_type::NONE;
         float max_val = 0.0f;

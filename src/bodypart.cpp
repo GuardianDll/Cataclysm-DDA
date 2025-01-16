@@ -89,7 +89,7 @@ std::string enum_to_string<body_part_type::type>( body_part_type::type data )
         case body_part_type::type::torso: return "torso";
         case body_part_type::type::wing: return "wing";
             // *INDENT-ON*
-        case body_part_type::type::num_types:
+        case body_part_type::type::last:
             break;
     }
     cata_fatal( "Invalid body part type." );
@@ -329,7 +329,7 @@ void body_part_type::load( const JsonObject &jo, const std::string_view )
     optional( jo, was_loaded, "is_vital", is_vital, false );
     if( jo.has_array( "limb_types" ) ) {
         limbtypes.clear();
-        body_part_type::type first_type = body_part_type::type::num_types;
+        body_part_type::type first_type = body_part_type::type::last;
         bool set_first_type = true;
         for( JsonValue jval : jo.get_array( "limb_types" ) ) {
             float weight = 1.0f;
@@ -343,7 +343,7 @@ void body_part_type::load( const JsonObject &jo, const std::string_view )
                 limb_type = io::string_to_enum<body_part_type::type>( jval.get_string() );
             }
             limbtypes.emplace( limb_type, weight );
-            if( first_type == body_part_type::type::num_types ) {
+            if( first_type == body_part_type::type::last ) {
                 first_type = limb_type;
             }
         }
@@ -358,7 +358,7 @@ void body_part_type::load( const JsonObject &jo, const std::string_view )
         limbtypes.emplace( limb_type, 1.0f );
     }
 
-    if( _primary_limb_type == body_part_type::type::num_types ) {
+    if( _primary_limb_type == body_part_type::type::last ) {
         float high = 0.f;
         for( auto &bp_type : limbtypes ) {
             if( high < bp_type.second ) {

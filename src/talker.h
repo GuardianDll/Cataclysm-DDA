@@ -2,6 +2,7 @@
 #ifndef CATA_SRC_TALKER_H
 #define CATA_SRC_TALKER_H
 
+#include "bodypart.h"
 #include "coords_fwd.h"
 #include "effect.h"
 #include "item.h"
@@ -621,6 +622,10 @@ class const_talker
             return 0_C_delta;
         }
         virtual std::vector<bodypart_id> get_all_body_parts( get_body_part_flags /* flags */ ) const {
+            return std::vector<bodypart_id>();
+        }
+        virtual std::vector<bodypart_id> get_all_body_parts_of_type( body_part_type::type /* part type */,
+                get_body_part_flags /* flags */ ) const {
             return std::vector<bodypart_id>();
         }
         virtual int get_part_hp_cur( const bodypart_id & ) const {

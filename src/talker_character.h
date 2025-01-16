@@ -184,6 +184,8 @@ class talker_character_const: virtual public const_talker
         int item_rads( const flag_id &flag, aggregate_type agg_func ) const override;
 
         std::vector<bodypart_id> get_all_body_parts( get_body_part_flags flags ) const override;
+        std::vector<bodypart_id> get_all_body_parts_of_type( body_part_type::type part_type,
+                get_body_part_flags flags ) const override;
         int get_part_hp_cur( const bodypart_id &id ) const override;
         int get_part_hp_max( const bodypart_id &id ) const override;
         bool get_is_alive() const override;
