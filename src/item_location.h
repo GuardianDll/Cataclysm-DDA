@@ -16,6 +16,7 @@ class item_pocket;
 class map_cursor;
 class vehicle_cursor;
 class talker;
+class const_talker;
 struct tripoint;
 template<typename T> class ret_val;
 
@@ -67,8 +68,6 @@ class item_location
         type where_recursive() const;
 
         /** Returns the position where the item is found */
-        // TODO: fix point types (remove position in favour of pos_bub)
-        tripoint position() const;
         tripoint_bub_ms pos_bub() const;
 
         /** Describes the item location
@@ -110,6 +109,9 @@ class item_location
 
         /** returns the character whose inventory contains this item, nullptr if none **/
         Character *carrier() const;
+
+        /** returns the character whose inventory contains this item, nullptr if none **/
+        const vehicle_cursor *veh_cursor() const;
 
         /** returns true if the item is in the inventory of the given character **/
         bool held_by( Character const &who ) const;
@@ -167,6 +169,6 @@ class item_location
         std::shared_ptr<impl> ptr;
 };
 std::unique_ptr<talker> get_talker_for( item_location &it );
-std::unique_ptr<talker> get_talker_for( const item_location &it );
+std::unique_ptr<const_talker> get_const_talker_for( const item_location &it );
 std::unique_ptr<talker> get_talker_for( item_location *it );
 #endif // CATA_SRC_ITEM_LOCATION_H

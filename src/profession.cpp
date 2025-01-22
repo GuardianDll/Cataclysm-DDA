@@ -13,6 +13,7 @@
 #include "avatar.h"
 #include "calendar.h"
 #include "debug.h"
+#include "effect_on_condition.h"
 #include "flag.h"
 #include "generic_factory.h"
 #include "item.h"
@@ -29,8 +30,12 @@
 #include "translations.h"
 #include "type_id.h"
 #include "visitable.h"
+#include <trait_group.h>
+#include <npc_class.h>
 
 static const achievement_id achievement_achievement_arcade_mode( "achievement_arcade_mode" );
+static const trait_group::Trait_group_tag
+Trait_group_BG_survival_story_UNIVERSAL( "BG_survival_story_UNIVERSAL" );
 
 namespace
 {
@@ -139,6 +144,7 @@ profession::profession()
       _name_female( no_translation( "null" ) ),
       _description_male( no_translation( "null" ) ),
       _description_female( no_translation( "null" ) )
+
 {
 }
 
@@ -247,6 +253,9 @@ void profession::load( const JsonObject &jo, const std::string_view )
         _description_male = to_translation( "prof_desc_male", desc_male );
         _description_female = to_translation( "prof_desc_female", desc_female );
     }
+    std::string background_group_id;
+    optional( jo, was_loaded, "npc_background", _starting_npc_background,
+              Trait_group_BG_survival_story_UNIVERSAL );
     optional( jo, was_loaded, "age_lower", age_lower, 16 );
     optional( jo, was_loaded, "age_upper", age_upper, 55 );
 
@@ -268,6 +277,12 @@ void profession::load( const JsonObject &jo, const std::string_view )
             int level = subobj.get_int( "level" );
             spell_id sp = spell_id( subobj.get_string( "id" ) );
             _starting_spells.emplace( sp, level );
+        }
+    }
+
+    if( jo.has_member( "effect_on_conditions" ) ) {
+        for( JsonValue jv : jo.get_array( "effect_on_conditions" ) ) {
+            effect_on_conditions.push_back( effect_on_conditions::load_inline_eoc( jv, "" ) );
         }
     }
 
@@ -650,6 +665,19 @@ std::set<trait_id> profession::get_forbidden_traits() const
     return _forbidden_traits;
 }
 
+trait_id profession::pick_background() const
+{
+    if( mutation_branch::get_group( _starting_npc_background ) == nullptr ) {
+        debugmsg( "invalid trait group ID for profession: " + id.str() );
+        return trait_id();
+    }
+    const trait_group::Trait_list &background = trait_group::traits_from( _starting_npc_background );
+    if( !background.empty() ) {
+        return background.front().trait;
+    }
+    return trait_id();
+}
+
 profession::StartingSkillList profession::skills() const
 {
     return _starting_skills;
@@ -711,13 +739,18 @@ std::map<spell_id, int> profession::spells() const
 
 void profession::learn_spells( avatar &you ) const
 {
-    for( const std::pair<spell_id, int> spell_pair : spells() ) {
+    for( const std::pair<const spell_id, int> &spell_pair : spells() ) {
         you.magic->learn_spell( spell_pair.first, you, true );
         spell &sp = you.magic->get_spell( spell_pair.first );
         while( sp.get_level() < spell_pair.second && !sp.is_max_level( you ) ) {
             sp.gain_level( you );
         }
     }
+}
+
+std::vector<effect_on_condition_id> profession::get_eocs() const
+{
+    return effect_on_conditions;
 }
 
 // item_substitution stuff:

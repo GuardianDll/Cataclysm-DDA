@@ -616,9 +616,11 @@ void player_morale::display( int focus_eq, int pain_penalty, int sleepiness_pena
             void draw( catacurses::window &w, const int posy ) const {
                 int width = getmaxx( w );
                 if( sep_line ) {
+                    wattron( w, BORDER_COLOR );
                     mvwhline( w, point( 0, posy ), LINE_XXXO, 1 );
                     mvwhline( w, point( 1, posy ), 0, width - 2 );
                     mvwhline( w, point( width - 1, posy ), LINE_XOXX, 1 );
+                    wattroff( w, BORDER_COLOR );
                 } else {
                     int text_width = width - left_padding - right_padding;
                     if( !right.empty() ) {
@@ -701,6 +703,7 @@ void player_morale::display( int focus_eq, int pain_penalty, int sleepiness_pena
     }
 
     std::vector<morale_line> bottom_lines;
+    bottom_lines.reserve( 3 ); // We need at least 3 lines.
     bottom_lines.emplace_back( morale_line::separation_line {} );
     bottom_lines.emplace_back(
         _( "Total morale:" ), get_level(),
@@ -976,14 +979,13 @@ void player_morale::on_worn_item_washed( const item &it )
 void player_morale::on_effect_int_change( const efftype_id &eid, int intensity,
         const bodypart_id &bp )
 {
-    const bodypart_id bp_null( "bp_null" );
-    if( eid == effect_took_prozac && bp == bp_null ) {
+    if( eid == effect_took_prozac && bp == bodypart_str_id::NULL_ID() ) {
         set_prozac( intensity != 0 );
-    } else if( eid == effect_took_prozac_bad && bp == bp_null ) {
+    } else if( eid == effect_took_prozac_bad && bp == bodypart_str_id::NULL_ID() ) {
         set_prozac_bad( intensity != 0 );
-    } else if( eid == effect_cold && bp != bp_null ) {
+    } else if( eid == effect_cold && bp != bodypart_str_id::NULL_ID() ) {
         body_parts[bp].cold = intensity;
-    } else if( eid == effect_hot && bp != bp_null ) {
+    } else if( eid == effect_hot && bp != bodypart_str_id::NULL_ID() ) {
         body_parts[bp].hot = intensity;
     }
 }

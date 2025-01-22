@@ -369,7 +369,7 @@ static void debug_error_prompt(
                                 );
     ui.on_redraw( [&]( const ui_adaptor & ) {
         catacurses::erase();
-        fold_and_print( catacurses::stdscr, point_zero, getmaxx( catacurses::stdscr ), c_light_red,
+        fold_and_print( catacurses::stdscr, point::zero, getmaxx( catacurses::stdscr ), c_light_red,
                         "%s", message );
         wnoutrefresh( catacurses::stdscr );
     } );
@@ -392,7 +392,7 @@ static void debug_error_prompt(
             case 'i':
             case 'I':
                 ignored_messages.insert( msg_key );
-            /* fallthrough */
+                [[fallthrough]];
             case ' ':
                 stop = true;
                 break;
@@ -707,7 +707,7 @@ void DebugFile::init( DebugOutput output_mode, const std::string &filename )
                 }
             }
             file = std::make_shared<std::ofstream>(
-                       fs::u8path( filename ), std::ios::out | std::ios::app );
+                       std::filesystem::u8path( filename ), std::ios::out | std::ios::app );
             *file << "\n\n-----------------------------------------\n";
             *file << get_time() << " : Starting log.";
             DebugLog( D_INFO, D_MAIN ) << "Cataclysm DDA version " << getVersionString();
@@ -1476,6 +1476,7 @@ std::ostream &DebugLog( DebugLevel lev, DebugClass cl )
         }
 #endif
 
+        out << std::unitbuf; // flush writes immediately
         return out;
     }
 

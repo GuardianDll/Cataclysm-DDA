@@ -9,7 +9,7 @@
     "volume": "10ml",
     "charges": 1,
     "price": "300 kUSD",
-    "price_postapoc": 25,
+    "price_postapoc": "25 cent",
     "symbol": "!",
     "material": [ "nether_crystal", "alien_liquid" ],
     "phase": "liquid",
@@ -36,7 +36,7 @@
     "volume": "10ml",
     "charges": 1,
     "price": "120 kUSD",
-    "price_postapoc": 10,
+    "price_postapoc": "10 cent",
     "material": [ "nether_crystal", "alien_liquid" ],
     "phase": "liquid",
     "container": "test_tube",
@@ -58,7 +58,7 @@
     "volume": "10ml",
     "charges": 1,
     "price": "120 kUSD",
-    "price_postapoc": 10,
+    "price_postapoc": "10 cent",
     "material": [ "nether_crystal", "alien_liquid" ],
     "phase": "liquid",
     "container": "test_tube",
@@ -70,7 +70,7 @@
     "flags": [ "NO_INGEST" ],
     "use_action": {
       "type": "consume_drug",
-      "activation_message": "You inject the noetic resilience treatment.",
+      "activation_message": "You inject the %s.",
       "tools_needed": { "syringe": -1 },
       "effects": [ { "id": "effect_noetic_resilience_trigger", "duration": 1 } ]
     }

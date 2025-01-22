@@ -76,11 +76,13 @@ class profession
         std::vector<matype_id> _starting_martialarts_choices;
         std::set<trait_id> _forbidden_traits;
         std::vector<mtype_id> _starting_pets;
+        trait_group::Trait_group_tag _starting_npc_background;
         std::set<string_id<profession>> _hobby_exclusion;
         bool hobbies_whitelist = true;
         vproto_id _starting_vehicle = vproto_id::NULL_ID();
         // the int is what level the spell starts at
         std::map<spell_id, int> _starting_spells;
+        std::vector<effect_on_condition_id> effect_on_conditions;
         std::set<std::string> flags; // flags for some special properties of the profession
         StartingSkillList  _starting_skills;
         std::vector<mission_type_id> _missions; // starting missions for profession
@@ -137,7 +139,7 @@ class profession
 
         std::map<spell_id, int> spells() const;
         void learn_spells( avatar &you ) const;
-
+        std::vector<effect_on_condition_id> get_eocs() const;
         //returns the profession id
         profession_id get_profession_id() const;
 
@@ -164,6 +166,7 @@ class profession
         bool is_forbidden_trait( const trait_id &trait ) const;
         std::vector<trait_and_var> get_locked_traits() const;
         std::set<trait_id> get_forbidden_traits() const;
+        trait_id pick_background() const;
 
         bool is_hobby() const;
         bool is_blacklisted() const;

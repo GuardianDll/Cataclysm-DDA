@@ -24,6 +24,7 @@
 #include "mod_tracker.h"
 #include "npc.h"
 #include "output.h"
+#include "profession.h"
 #include "scenario.h"
 #include "string_formatter.h"
 #include "talker.h"
@@ -39,10 +40,11 @@ namespace io
         switch ( data ) {
         case eoc_type::ACTIVATION: return "ACTIVATION";
         case eoc_type::RECURRING: return "RECURRING";
+            // Why we need SCENARIO_SPECIFIC / PROFESSION_SPECIFIC? they are no different from ACTIVATION
         case eoc_type::SCENARIO_SPECIFIC: return "SCENARIO_SPECIFIC";
+        case eoc_type::PROFESSION_SPECIFIC: return "PROFESSION_SPECIFIC";
         case eoc_type::AVATAR_DEATH: return "AVATAR_DEATH";
         case eoc_type::NPC_DEATH: return "NPC_DEATH";
-        case eoc_type::OM_MOVE: return "OM_MOVE";
         case eoc_type::PREVENT_DEATH: return "PREVENT_DEATH";
         case eoc_type::EVENT: return "EVENT";
         case eoc_type::NUM_EOC_TYPES: break;
@@ -147,6 +149,17 @@ void effect_on_conditions::load_new_character( Character &you )
             you.queued_effect_on_conditions.push( new_eoc );
         }
     }
+
+    if( you.get_profession() ) {
+        for( const effect_on_condition_id &eoc_id : you.get_profession()->get_eocs() ) {
+            effect_on_condition eoc = eoc_id.obj();
+            if( eoc.type == eoc_type::PROFESSION_SPECIFIC && ( is_avatar || eoc.run_for_npcs ) ) {
+                queued_eoc new_eoc = queued_eoc{ eoc.id, calendar::turn_zero, {} };
+                you.queued_effect_on_conditions.push( new_eoc );
+            }
+        }
+    }
+
     for( const effect_on_condition &eoc : effect_on_conditions::get_all() ) {
         if( eoc.type == eoc_type::RECURRING && ( ( is_avatar && eoc.global ) || !eoc.global ) ) {
             dialogue d( get_talker_for( you ), nullptr );
@@ -346,7 +359,7 @@ bool effect_on_condition::activate( dialogue &d, bool require_callstack_check ) 
     return retval;
 }
 
-bool effect_on_condition::check_deactivate( dialogue &d ) const
+bool effect_on_condition::check_deactivate( const_dialogue const &d ) const
 {
     if( !has_deactivate_condition || has_false_effect ) {
         return false;
@@ -354,7 +367,7 @@ bool effect_on_condition::check_deactivate( dialogue &d ) const
     return deactivate_condition( d );
 }
 
-bool effect_on_condition::test_condition( dialogue &d ) const
+bool effect_on_condition::test_condition( const_dialogue const &d ) const
 {
     return !has_condition || condition( d );
 }
@@ -467,17 +480,6 @@ void effect_on_conditions::avatar_death()
     }
 }
 
-void effect_on_conditions::om_move()
-{
-    avatar &player_character = get_avatar();
-    dialogue d( get_talker_for( player_character ), nullptr );
-    for( const effect_on_condition &eoc : effect_on_conditions::get_all() ) {
-        if( eoc.type == eoc_type::OM_MOVE ) {
-            eoc.activate( d );
-        }
-    }
-}
-
 void effect_on_condition::finalize()
 {
 }
@@ -568,7 +570,7 @@ void eoc_events::notify( const cata::event &e, std::unique_ptr<talker> alpha,
         dialogue d;
         std::unordered_map<std::string, std::string> context;
         for( const auto &val : e.data() ) {
-            context["npctalk_var_" + val.first] = val.second.get_string();
+            context[val.first] = val.second.get_string();
         }
 
         // if we have an NPC to trigger this event for, do so,
