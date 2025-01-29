@@ -2407,11 +2407,10 @@ class pulp_activity_actor : public activity_actor
 {
     public:
         pulp_activity_actor() = default;
-        explicit pulp_activity_actor( const tripoint_abs_ms placement,
-                                      const bool pulp_acid = false ) : placement( { placement } ),
-        num_corpses( 0 ), pulp_acid( pulp_acid ) {}
-        explicit pulp_activity_actor( const std::set<tripoint_abs_ms> &placement,
-                                      const bool pulp_acid = false ) : placement( placement ), num_corpses( 0 ), pulp_acid( pulp_acid ) {}
+        explicit pulp_activity_actor( const tripoint_abs_ms placement ) : placement( { placement } ),
+        num_corpses( 0 ), pulp_power( 0 ), pulp_effort( 0 ), mess_radius( 1 ) {}
+        explicit pulp_activity_actor( const std::set<tripoint_abs_ms> &placement ) : placement( placement ),
+            num_corpses( 0 ), pulp_power( 0 ), pulp_effort( 0 ), mess_radius( 1 ) {}
         const activity_id &get_type() const override {
             static const activity_id ACT_PULP( "ACT_PULP" );
             return ACT_PULP;
@@ -2419,10 +2418,13 @@ class pulp_activity_actor : public activity_actor
 
         void start( player_activity &act, Character &who ) override;
         void do_turn( player_activity &act, Character &you ) override;
+        void canceled( player_activity &act, Character &p );
         void finish( player_activity &, Character & ) override;
 
         std::unique_ptr<activity_actor> clone() const override {
-            return std::make_unique<pulp_activity_actor>( *this );
+            auto plp = std::make_unique<pulp_activity_actor>( *this );
+            plp.get()->current_pos_iter = plp.get()->placement.begin();
+            return plp;
         }
 
         void serialize( JsonOut &jsout ) const override;
@@ -2432,11 +2434,14 @@ class pulp_activity_actor : public activity_actor
         bool can_resume_with_internal( const activity_actor &other,
                                        const Character &/*who*/ ) const override {
             const pulp_activity_actor &actor = static_cast<const pulp_activity_actor &>( other );
-            return actor.pulp_acid == pulp_acid;
+            return true;
         }
         std::set<tripoint_abs_ms> placement;
         int num_corpses;
-        bool pulp_acid;
+        float pulp_power;
+        float pulp_effort;
+        int mess_radius;
+        std::set<tripoint_abs_ms>::const_iterator current_pos_iter;
 };
 
 class wait_stamina_activity_actor : public activity_actor

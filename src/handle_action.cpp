@@ -1024,18 +1024,12 @@ avatar::smash_result avatar::smash( tripoint_bub_ms &smashp )
     bool should_pulp = false;
     for( const item &maybe_corpse : here.i_at( smashp ) ) {
         if( is_smashable_corpse( maybe_corpse ) ) {
-            if( maybe_corpse.get_mtype()->bloodType()->has_acid &&
-                !is_immune_field( fd_acid ) ) {
-                if( !query_yn( _( "Are you sure you want to pulp an acid filled corpse?" ) ) ) {
-                    return ret; // Player doesn't want an acid bath
-                }
-            }
             should_pulp = true; // There is at least one corpse to pulp
         }
     }
 
     if( should_pulp ) {
-        assign_activity( pulp_activity_actor( here.get_abs( smashp ), true ) );
+        assign_activity( pulp_activity_actor( here.get_abs( smashp ) ) );
         return ret; // don't smash terrain if we've smashed a corpse
     }
 
