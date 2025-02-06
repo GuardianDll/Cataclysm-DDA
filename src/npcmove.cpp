@@ -147,6 +147,7 @@ static const itype_id itype_thorazine( "thorazine" );
 static const npc_class_id NC_EVAC_SHOPKEEP( "NC_EVAC_SHOPKEEP" );
 
 static const skill_id skill_firstaid( "firstaid" );
+static const skill_id skill_swimming( "swimming" );
 
 static const trait_id trait_IGNORE_SOUND( "IGNORE_SOUND" );
 static const trait_id trait_RETURN_TO_START_POS( "RETURN_TO_START_POS" );
@@ -3917,10 +3918,25 @@ bool npc::find_corpse_to_pulp()
             // Pulp only stuff that revives, but don't pulp acid stuff
             // That is, if you aren't protected from this stuff!
             if( it.can_revive() ) {
-                // If the first encountered corpse bleeds something dangerous then
-                // it is not safe to bash.
-                if( is_dangerous_field( field_entry( it.get_mtype()->bloodType(), 1, 0_turns ) ) ) {
-                    return nullptr;
+
+                const mtype &corpse = *it.get_corpse_mon();
+                if( corpse.size > 3 ) {
+
+                    // stripped copy of calculations from pulp_activity_actor::start()
+                    std::pair<float, item> pair = get_best_weapon_by_damage_type( damage_bash );
+
+                    const double weight_factor = units::to_kilogram( get_weight() ) / 10;
+                    const double athletic_factor = std::min( 6.0f, get_skill_level( skill_swimming ) + 1 ) * 3;
+                    const double strength_factor = get_str() / 2;
+                    const float pulp_power_stomps = athletic_factor + weight_factor + strength_factor;
+                    const double bash_factor = std::max( pulp_power_stomps, pair.first );
+
+                    if( corpse.size == 4 && bash_factor < 33 ) {
+                        continue;
+                    }
+                    if( corpse.size == 5 && bash_factor < 45 ) {
+                        continue;
+                    }
                 }
 
                 found = &it;
