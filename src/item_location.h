@@ -2,21 +2,23 @@
 #ifndef CATA_SRC_ITEM_LOCATION_H
 #define CATA_SRC_ITEM_LOCATION_H
 
+#include <list>
 #include <memory>
 #include <string>
+#include <utility>
 
-#include "coordinates.h"
+#include "coords_fwd.h"
 #include "units_fwd.h"
 
 class Character;
 class JsonObject;
 class JsonOut;
+class const_talker;
 class item;
 class item_pocket;
 class map_cursor;
-class vehicle_cursor;
 class talker;
-struct tripoint;
+class vehicle_cursor;
 template<typename T> class ret_val;
 
 /**
@@ -67,8 +69,6 @@ class item_location
         type where_recursive() const;
 
         /** Returns the position where the item is found */
-        // TODO: fix point types (remove position in favour of pos_bub)
-        tripoint position() const;
         tripoint_bub_ms pos_bub() const;
 
         /** Describes the item location
@@ -110,6 +110,9 @@ class item_location
 
         /** returns the character whose inventory contains this item, nullptr if none **/
         Character *carrier() const;
+
+        /** returns the character whose inventory contains this item, nullptr if none **/
+        const vehicle_cursor *veh_cursor() const;
 
         /** returns true if the item is in the inventory of the given character **/
         bool held_by( Character const &who ) const;
@@ -154,12 +157,30 @@ class item_location
          */
         void overflow();
 
+        /**
+         * returns whether the item can be reloaded with the specified item.
+         * @param ammo item to be loaded in
+         * @param now whether the currently contained ammo/magazine should be taken into account
+         */
+        bool can_reload_with( const item_location &ammo, bool now ) const;
+
+        /**
+        * returns the item's level of the specified quality.
+        * @param quality the name of quality to check the level of
+        * @param boiling true if the item is required to be empty to have the boiling quality
+        */
+        int get_quality( const std::string &quality, bool strict ) const;
+
     private:
         class impl;
 
         std::shared_ptr<impl> ptr;
 };
 std::unique_ptr<talker> get_talker_for( item_location &it );
-std::unique_ptr<talker> get_talker_for( const item_location &it );
+std::unique_ptr<const_talker> get_const_talker_for( const item_location &it );
 std::unique_ptr<talker> get_talker_for( item_location *it );
+
+using drop_location = std::pair<item_location, int>;
+using drop_locations = std::list<drop_location>;
+
 #endif // CATA_SRC_ITEM_LOCATION_H

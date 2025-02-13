@@ -2,7 +2,6 @@
   {
     "type": "mapgen",
     "method": "json",
-    "weight": 500,
     "om_terrain": [ [ "s_baseballfield_a1", "s_baseballfield_a2" ], [ "s_baseballfield_b1", "s_baseballfield_b2" ] ],
     "object": {
       "rows": [
@@ -109,5 +108,40 @@
       { "item": "hat_ball", "prob": 75 },
       { "item": "helmet_ball", "prob": 65 }
     ]
+  },
+  {
+    "type": "mapgen",
+    "method": "json",
+    "om_terrain": [ "s_baseballfield_a2_2" ],
+    "object": {
+      "fill_ter": "t_open_air",
+      "rows": [
+        "                        ",
+        "                        ",
+        "              ||||||||  ",
+        "              ||||||||  ",
+        "              ||||||||  ",
+        "       |||||||||||||||  ",
+        "       |      |      |  ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        "
+      ],
+      "terrain": { "|": "t_concrete_roof" }
+    }
   }
 ]

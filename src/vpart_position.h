@@ -2,29 +2,25 @@
 #ifndef CATA_SRC_VPART_POSITION_H
 #define CATA_SRC_VPART_POSITION_H
 
-#include <functional>
 #include <cstddef>
-#include <iosfwd>
-#include <new>
+#include <functional>
+#include <map>
 #include <optional>
-#include <type_traits>
-#include <utility>
+#include <string>
 #include <vector>
 
+#include "coords_fwd.h"
 #include "type_id.h"
 
-struct input_event;
-class inventory;
 class Character;
+class inventory;
+class map;
 class vehicle;
 class vehicle_stack;
 class vpart_info;
-struct vehicle_part;
-
-enum vpart_bitflags : int;
 class vpart_reference;
-struct point;
-struct tripoint;
+enum vpart_bitflags : int;
+struct vehicle_part;
 
 /**
  * Reference to a position (a point) of the @ref vehicle.
@@ -70,9 +66,11 @@ class vpart_position
         // @return reference to unbroken CARGO part at this position or std::nullopt
         std::optional<vpart_reference> cargo() const;
         /// @see vehicle::part_with_feature
-        std::optional<vpart_reference> part_with_feature( const std::string &f, bool unbroken ) const;
+        std::optional<vpart_reference> part_with_feature( const std::string &f, bool unbroken,
+                bool include_fake = false ) const;
         /// @see vehicle::part_with_feature
-        std::optional<vpart_reference> part_with_feature( vpart_bitflags f, bool unbroken ) const;
+        std::optional<vpart_reference> part_with_feature( vpart_bitflags f, bool unbroken,
+                bool include_fake = false ) const;
         /// @see vehicle::part_with_feature
         std::optional<vpart_reference> avail_part_with_feature( const std::string &f ) const;
         /// @see vehicle::part_with_feature
@@ -95,21 +93,14 @@ class vpart_position
         // Forms inventory for inventory::form_from_map
         void form_inventory( inventory &inv ) const;
 
-        /**
-         * Returns the position of this part in the coordinates system that @ref game::m uses.
-         * Postcondition (if the vehicle cache of the map is correct and if there are un-removed
-         * parts at this positions):
-         * `g->m.veh_at( this->pos() )` (there is a vehicle there)
-         * `g->m.veh_at( this->pos() )->vehicle() == this->vehicle()` (it's this one)
-         */
-        // Name chosen to match Creature::pos
-        tripoint pos() const;
+        tripoint_bub_ms pos_bub( map *here ) const;
+        tripoint_abs_ms pos_abs() const;
         /**
          * Returns the mount point: the point in the vehicles own coordinate system.
          * This system is independent of movement / rotation.
          */
         // TODO: change to return tripoint.
-        point mount() const;
+        point_rel_ms mount_pos() const;
 
         // implementation required for using as std::map key
         bool operator<( const vpart_position &other ) const;
@@ -138,7 +129,7 @@ class optional_vpart_position : public std::optional<vpart_position>
         std::optional<vpart_reference> obstacle_at_part() const;
         std::optional<vpart_reference> part_displayed() const;
         std::optional<vpart_reference> part_with_tool( const itype_id &tool_type ) const;
-        std::string extended_description() const;
+        std::vector<std::string> extended_description() const;
 };
 
 /**

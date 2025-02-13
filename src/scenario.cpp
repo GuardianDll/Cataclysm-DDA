@@ -2,21 +2,20 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <ostream>
+#include <unordered_set>
 
 #include "achievement.h"
 #include "debug.h"
+#include "flexbuffer_json.h"
 #include "generic_factory.h"
-#include "json.h"
-#include "map_extras.h"
 #include "mission.h"
 #include "mutation.h"
 #include "options.h"
-#include "past_games_info.h"
 #include "past_achievements_info.h"
 #include "profession.h"
 #include "rng.h"
 #include "start_location.h"
-#include "string_id.h"
 #include "translations.h"
 
 static const achievement_id achievement_achievement_arcade_mode( "achievement_arcade_mode" );
@@ -111,7 +110,7 @@ void scenario::load( const JsonObject &jo, const std::string_view )
     if( !was_loaded ) {
 
         int _start_of_cataclysm_hour = 0;
-        int _start_of_cataclysm_day = 61;
+        int _start_of_cataclysm_day = 1 + get_option<int>( "SEASON_LENGTH" ) / 3 * 2;
         season_type _start_of_cataclysm_season = SPRING;
         int _start_of_cataclysm_year = 1;
         if( jo.has_member( "start_of_cataclysm" ) ) {
@@ -129,7 +128,7 @@ void scenario::load( const JsonObject &jo, const std::string_view )
                                       ;
 
         int _start_of_game_hour = 8;
-        int _start_of_game_day = 61;
+        int _start_of_game_day = 1 + get_option<int>( "SEASON_LENGTH" ) / 3 * 2;
         season_type _start_of_game_season = SPRING;
         int _start_of_game_year = 1;
         if( jo.has_member( "start_of_game" ) ) {
@@ -373,7 +372,9 @@ void scen_blacklist::load( const JsonObject &jo, const std::string_view )
 void scen_blacklist::finalize()
 {
     std::vector<string_id<scenario>> all_scens;
-    for( const scenario &scen : scenario::get_all() ) {
+    std::vector<scenario> all_scenarios = scenario::get_all();
+    all_scens.reserve( all_scenarios.size() );
+    for( const scenario &scen : all_scenarios ) {
         all_scens.emplace_back( scen.ident() );
     }
     for( const string_id<scenario> &sc : sc_blacklist.scenarios ) {

@@ -96,7 +96,7 @@
       {
         "id": "syndicalist_states_tshirt",
         "name": { "str": "CSA t-shirt" },
-        "description": "A short-sleeved cotton shirt with a globe at the bottom with a C above the globe with an S to the left and A to the right.  The background is like a flag with with the top left being the corner of a black triangle and the bottom right is a red triangle.  They meet in the middle with the globe.",
+        "description": "A short-sleeved cotton shirt with a globe at the bottom with a C above the globe with an S to the left and A to the right.  The background is like a flag with the top left being the corner of a black triangle and the bottom right is a red triangle.  They meet in the middle with the globe.",
         "weight": 1
       }
     ]
@@ -411,14 +411,59 @@
     "extend": { "flags": [ "FANCY" ] }
   },
   {
+    "id": "slippers_gossamer",
+    "type": "ARMOR",
+    "copy-from": "slippers",
+    "looks_like": "slippers",
+    "name": { "str": "pair of gossamer slippers", "str_pl": "pairs of gossamer slippers" },
+    "description": "Soft indoor shoes, suitable for wearing whie drinking liquid light from goblets of unmelting ice and dancing the night away.",
+    "proportional": { "weight": 0.6666, "price": 2 },
+    "material": [ "fae_cotton" ],
+    "symbol": "[",
+    "color": "white",
+    "flags": [ "VARSIZE" ],
+    "warmth": 4,
+    "//": "Very low encumbrance because these are medieval indoor shoes, not fuzzy bath slippers",
+    "armor": [
+      {
+        "covers": [ "foot_l", "foot_r" ],
+        "specifically_covers": [ "foot_toes_r", "foot_toes_l" ],
+        "material": [ { "type": "fae_cotton", "covered_by_mat": 100, "thickness": 0.5 } ],
+        "encumbrance": 4,
+        "coverage": 100
+      },
+      {
+        "covers": [ "foot_l", "foot_r" ],
+        "specifically_covers": [ "foot_arch_r", "foot_arch_l" ],
+        "material": [ { "type": "fae_cotton", "covered_by_mat": 100, "thickness": 0.5 } ],
+        "coverage": 90
+      },
+      {
+        "covers": [ "foot_l", "foot_r" ],
+        "specifically_covers": [ "foot_heel_r", "foot_heel_l" ],
+        "material": [ { "type": "fae_cotton", "covered_by_mat": 100, "thickness": 0.5 } ],
+        "coverage": 10
+      },
+      {
+        "covers": [ "foot_l", "foot_r" ],
+        "specifically_covers": [ "foot_sole_r", "foot_sole_l" ],
+        "material": [
+          { "type": "fae_cotton", "covered_by_mat": 100, "thickness": 1.5 },
+          { "type": "leather", "covered_by_mat": 100, "thickness": 2.0 }
+        ],
+        "coverage": 100
+      }
+    ]
+  },
+  {
     "id": "cloak_verdant",
     "type": "ARMOR",
     "name": { "str": "verdant cloak" },
     "description": "A heavy cloak made of living leaves with long twigs and branches connecting them, meant to be thrown over your body.",
     "weight": "1175 g",
     "volume": "3 L",
-    "price": 10700,
-    "price_postapoc": 500,
+    "price": "107 USD",
+    "price_postapoc": "5 USD",
     "to_hit": -1,
     "material": [ "veggy" ],
     "symbol": "[",
@@ -430,5 +475,19 @@
     "flags": [ "OVERSIZE", "HOOD", "BELTED" ],
     "armor": [ { "encumbrance": 4, "coverage": 65, "covers": [ "torso", "arm_l", "arm_r", "leg_l", "leg_r" ] } ],
     "relic_data": { "passive_effects": [ { "id": "ench_verdant_cloak" } ] }
+  },
+  {
+    "id": "holy_symbol",
+    "type": "ARMOR",
+    "copy-from": "holy_symbol",
+    "name": { "str": "holy symbol" },
+    "extend": { "flags": [ "WARDING_SYMBOL" ] }
+  },
+  {
+    "id": "holy_symbol_wood",
+    "type": "ARMOR",
+    "copy-from": "holy_symbol_wood",
+    "name": { "str": "handmade holy symbol" },
+    "extend": { "flags": [ "WARDING_SYMBOL" ] }
   }
 ]

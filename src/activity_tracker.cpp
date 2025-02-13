@@ -1,11 +1,14 @@
 #include "activity_tracker.h"
 
+#include <algorithm>
+#include <cmath>
+#include <map>
+#include <utility>
+
 #include "cata_assert.h"
 #include "game_constants.h"
 #include "options.h"
 #include "string_formatter.h"
-
-#include <cmath>
 
 int activity_tracker::weariness() const
 {
@@ -60,6 +63,16 @@ void activity_tracker::weary_clear()
     tracker = 0;
     intake = 0;
     low_activity_ticks = 0.0f;
+}
+
+int activity_tracker::debug_get_tracker() const
+{
+    return tracker;
+}
+
+void activity_tracker::debug_set_tracker( int new_tracker )
+{
+    tracker = new_tracker;
 }
 
 void activity_tracker::set_intake( int ncal )

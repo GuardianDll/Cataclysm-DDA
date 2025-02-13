@@ -20,6 +20,19 @@
     "min_strength": 16,
     "clip_size": 9,
     "flags": [ "WATERPROOF_GUN", "RELOAD_ONE", "NEVER_JAMS" ],
+    "valid_mod_locations": [
+      [ "barrel", 1 ],
+      [ "brass catcher", 1 ],
+      [ "grip", 1 ],
+      [ "mechanism", 2 ],
+      [ "muzzle", 1 ],
+      [ "rail", 1 ],
+      [ "sights", 1 ],
+      [ "sling", 1 ],
+      [ "stock", 1 ],
+      [ "ETCfirmware", 1 ],
+      [ "underbarrel", 1 ]
+    ],
     "pocket_data": [
       {
         "pocket_type": "MAGAZINE",
@@ -36,7 +49,7 @@
     "copy-from": "rifle_22",
     "name": { "str": "landfall survival gun" },
     "description": "A lightweight, bolt-action gun that is barely more than a 7.50mm barrel mounted within a flimsy metal assembly.  Cheaply made and outdated in all respects, it's only useful in the most extenuating of circumstances.",
-    "price": 5000,
+    "price": "50 USD",
     "material": [ "steel", "plastic" ],
     "flags": [ "NEVER_JAMS", "RELOAD_EJECT" ],
     "dispersion": 250,
@@ -58,7 +71,7 @@
     "weight": "7500 g",
     "volume": "10610 ml",
     "longest_side": "1035 mm",
-    "price": 750000,
+    "price": "7 kUSD 500 USD",
     "to_hit": -1,
     "material": [ "superalloy", "plastic" ],
     "symbol": "(",
@@ -77,6 +90,7 @@
       [ "mechanism", 2 ],
       [ "muzzle", 1 ],
       [ "rail", 1 ],
+      [ "ETCfirmware", 1 ],
       [ "sights", 1 ],
       [ "sling", 1 ],
       [ "stock", 1 ]
@@ -103,7 +117,7 @@
     "weight": "3170 g",
     "volume": "3100 ml",
     "longest_side": "630 mm",
-    "price": 125000,
+    "price": "1 kUSD 250 USD",
     "to_hit": -1,
     "material": [ "superalloy", "plastic" ],
     "ranged_damage": { "damage_type": "bullet", "amount": -7 },
@@ -122,6 +136,20 @@
         "max_contains_weight": "20 kg",
         "item_restriction": [ "afs_UICASTA30" ]
       }
+    ],
+    "valid_mod_locations": [
+      [ "barrel", 1 ],
+      [ "brass catcher", 1 ],
+      [ "grip", 1 ],
+      [ "mechanism", 2 ],
+      [ "muzzle", 1 ],
+      [ "rail mount", 1 ],
+      [ "sights mount", 1 ],
+      [ "sling", 1 ],
+      [ "stock", 1 ],
+      [ "stock accessory", 2 ],
+      [ "underbarrel", 1 ],
+      [ "ETCfirmware", 1 ]
     ],
     "melee_damage": { "bash": 12 },
     "weapon_category": [ "AUTOMATIC_RIFLES" ]
@@ -154,9 +182,8 @@
     "volume": "3817 ml",
     "longest_side": "511 mm",
     "barrel_length": "264 mm",
-    "price": 350000,
-    "price_postapoc": 3500,
-    "to_hit": -2,
+    "price": "3 kUSD 500 USD",
+    "price_postapoc": "35 USD",
     "material": [ "superalloy", "plastic" ],
     "symbol": "(",
     "color": "light_gray",
@@ -172,11 +199,13 @@
       [ "mechanism", 4 ],
       [ "muzzle", 1 ],
       [ "rail", 1 ],
+      [ "ETCfirmware", 1 ],
       [ "sights", 1 ],
       [ "sling", 1 ],
+      [ "underbarrel", 1 ],
       [ "stock accessory", 2 ]
     ],
-    "faults": [ "fault_gun_blackpowder", "fault_gun_dirt", "fault_gun_chamber_spent" ],
+    "faults": [ "fault_gun_blackpowder", "fault_gun_dirt", "fault_fail_to_feed", "fault_double_feed" ],
     "pocket_data": [ { "magazine_well": "500 ml", "pocket_type": "MAGAZINE_WELL", "item_restriction": [ "afs_sr77_45mag" ] } ],
     "melee_damage": { "bash": 10 }
   }

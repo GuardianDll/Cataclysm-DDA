@@ -3,7 +3,6 @@
     "method": "json",
     "type": "mapgen",
     "om_terrain": [ [ "TreeFarm_1a", "TreeFarm_1b" ] ],
-    "weight": 100,
     "object": {
       "fill_ter": "t_floor",
       "rows": [
@@ -60,6 +59,41 @@
         { "signage": "<given_name>'s Tree Farm, call us at 555-8758!", "x": 4, "y": 1 },
         { "signage": "Christmas trees available early winter!", "x": 5, "y": 1 }
       ]
+    }
+  },
+  {
+    "method": "json",
+    "type": "mapgen",
+    "om_terrain": [ "TreeFarm_1a_roof" ],
+    "object": {
+      "fill_ter": "t_floor",
+      "rows": [
+        "                        ",
+        "                        ",
+        "  ----                  ",
+        "  -..-                  ",
+        "  -..-                  ",
+        "  -..-                  ",
+        "  ----                  ",
+        "                        ",
+        "  ----                  ",
+        "  -..-                  ",
+        "  -..-                  ",
+        "  -..-                  ",
+        "  ----                  ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        ",
+        "                        "
+      ],
+      "palettes": [ "roof_palette" ]
     }
   }
 ]

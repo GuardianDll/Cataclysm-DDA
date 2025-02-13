@@ -4,25 +4,33 @@
 
 #include <algorithm>
 #include <bitset>
+#include <cstddef>
+#include <cstdint>
+#include <list>
 #include <set>
+#include <string>
+#include <string_view>
+#include <type_traits>
+#include <typeinfo>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
-#include "assign.h"
 #include "cached_options.h"
-#include "catacharset.h"
 #include "cata_scope_helpers.h"
-#include "cata_type_traits.h"
+#include "cata_utility.h"
 #include "debug.h"
-#include "enum_bitset.h"
+#include "demangle.h"
+#include "enum_conversions.h"
+#include "flexbuffer_json.h"
 #include "init.h"
 #include "int_id.h"
-#include "json.h"
 #include "mod_tracker.h"
-#include "output.h"
+#include "string_formatter.h"
 #include "string_id.h"
 #include "units.h"
-#include "wcwidth.h"
+
+template <typename E> class enum_bitset;
 
 /**
 A generic class to store objects identified by a `string_id`.
@@ -113,9 +121,6 @@ const my_class &string_id<my_class>::obj() const
 */
 
 template<typename T>
-class string_id_reader;
-
-template<typename T>
 class generic_factory
 {
 
@@ -143,9 +148,6 @@ class generic_factory
 
         std::string type_name;
         std::string id_member_name;
-        std::string alias_member_name;
-        // TEMPORARY until 0.G: Remove "ident" support
-        const std::string legacy_id_member_name = "ident";
 
         bool find_id( const string_id<T> &id, int_id<T> &result ) const {
             if( id._version == version ) {
@@ -164,22 +166,6 @@ class generic_factory
             return true;
         }
 
-        void remove_aliases( const string_id<T> &id ) {
-            int_id<T> i_id;
-            if( !find_id( id, i_id ) ) {
-                return;
-            }
-            auto iter = map.begin();
-            const auto end = map.end();
-            while( iter != end ) {
-                if( iter->second == i_id && iter->first != id ) {
-                    map.erase( iter++ );
-                } else {
-                    ++iter;
-                }
-            }
-        }
-
         const T dummy_obj;
 
     public:
@@ -189,14 +175,10 @@ class generic_factory
          * for example "vehicle type".
          * @param id_member_name The name of the JSON member that contains the id(s) of the
          * loaded object(s).
-         * @param alias_member_name Alternate names of the JSON member that contains the id(s) of the
-         * loaded object alias(es).
          */
-        explicit generic_factory( const std::string &type_name, const std::string &id_member_name = "id",
-                                  const std::string &alias_member_name = "alias" )
+        explicit generic_factory( const std::string &type_name, const std::string &id_member_name = "id" )
             : type_name( type_name ),
               id_member_name( id_member_name ),
-              alias_member_name( alias_member_name ),
               dummy_obj(),
               initialized( true ) {
         }
@@ -264,11 +246,11 @@ class generic_factory
             }
 
             if( jo.has_string( abstract_member_name ) ) {
-                if( jo.has_string( id_member_name ) || jo.has_string( legacy_id_member_name ) ) {
-                    jo.throw_error( string_format( "cannot specify both '%s' and '%s'/'%s'",
-                                                   abstract_member_name, id_member_name, legacy_id_member_name ) );
+                if( jo.has_string( id_member_name ) ) {
+                    jo.throw_error( string_format( "cannot specify both '%s' and '%s'",
+                                                   abstract_member_name, id_member_name ) );
                 }
-                restore_on_out_of_scope<check_plural_t> restore_check_plural( check_plural );
+                restore_on_out_of_scope restore_check_plural( check_plural );
                 check_plural = check_plural_t::none;
                 const std::string abstract_id =  jo.get_string( abstract_member_name );
                 def.id = string_id<T>( abstract_id );
@@ -288,8 +270,6 @@ class generic_factory
          * @throws JsonError If loading fails for any reason (thrown by `T::load`).
          */
         void load( const JsonObject &jo, const std::string &src ) {
-            bool strict = src == "dda";
-
             static const std::string abstract_member_name( "abstract" );
 
             T def;
@@ -303,16 +283,6 @@ class generic_factory
                 def.load( jo, src );
                 insert( def );
 
-                if( jo.has_member( alias_member_name ) ) {
-                    std::set<string_id<T>> aliases;
-                    assign( jo, alias_member_name, aliases, strict );
-
-                    const int_id<T> ref = map[def.id];
-                    for( const auto &e : aliases ) {
-                        map[e] = ref;
-                    }
-                }
-
             } else if( jo.has_array( id_member_name ) ) {
                 for( JsonValue e : jo.get_array( id_member_name ) ) {
                     T def;
@@ -324,46 +294,10 @@ class generic_factory
                     def.load( jo, src );
                     insert( def );
                 }
-                if( jo.has_member( alias_member_name ) ) {
-                    jo.throw_error( string_format( "can not specify '%s' when '%s' is array",
-                                                   alias_member_name, id_member_name ) );
-                }
-
-            } else if( jo.has_string( legacy_id_member_name ) ) {
-                def.id = string_id<T>( jo.get_string( legacy_id_member_name ) );
-                mod_tracker::assign_src( def, src );
-                def.load( jo, src );
-                insert( def );
-
-                if( jo.has_member( alias_member_name ) ) {
-                    std::set<string_id<T>> aliases;
-                    assign( jo, alias_member_name, aliases, strict );
-
-                    const int_id<T> ref = map[def.id];
-                    for( const auto &e : aliases ) {
-                        map[e] = ref;
-                    }
-                }
-
-            } else if( jo.has_array( legacy_id_member_name ) ) {
-                for( const JsonValue e : jo.get_array( legacy_id_member_name ) ) {
-                    T def;
-                    if( !handle_inheritance( def, jo, src ) ) {
-                        break;
-                    }
-                    def.id = string_id<T>( e );
-                    mod_tracker::assign_src( def, src );
-                    def.load( jo, src );
-                    insert( def );
-                }
-                if( jo.has_member( alias_member_name ) ) {
-                    jo.throw_error( string_format( "can not specify '%s' when '%s' is array",
-                                                   alias_member_name, legacy_id_member_name ) );
-                }
 
             } else if( !jo.has_string( abstract_member_name ) ) {
-                jo.throw_error( string_format( "must specify either '%s' or '%s'/'%s'",
-                                               abstract_member_name, id_member_name, legacy_id_member_name ) );
+                jo.throw_error( string_format( "must specify either '%s' or '%s'",
+                                               abstract_member_name, id_member_name ) );
             }
         }
         /**
@@ -1321,21 +1255,6 @@ public:
         return string_id<T>( std::move( str ) );
     }
 };
-
-/**
- * Reads a volume value from legacy format: JSON contains a integer which represents multiples
- * of `units::legacy_volume_factor` (250 ml).
- */
-inline bool legacy_volume_reader( const JsonObject &jo, const std::string_view member_name,
-                                  units::volume &value, bool )
-{
-    int legacy_value;
-    if( !jo.read( member_name, legacy_value ) ) {
-        return false;
-    }
-    value = legacy_value * units::legacy_volume_factor;
-    return true;
-}
 
 /**
  * Only for external use in legacy code where migrating to `class translation`

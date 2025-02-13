@@ -1,7 +1,6 @@
 #include "achievement.h"
 
 #include <cstdlib>
-#include <set>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -14,11 +13,13 @@
 #include "enums.h"
 #include "event.h"
 #include "event_statistics.h"
+#include "flexbuffer_json.h"
 #include "generic_factory.h"
 #include "json.h"
 #include "past_achievements_info.h"
 #include "stats_tracker.h"
 #include "string_formatter.h"
+#include "translations.h"
 
 template <typename E> struct enum_traits;
 

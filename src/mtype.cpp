@@ -1,22 +1,28 @@
 #include "mtype.h"
 
 #include <algorithm>
-#include <array>
 #include <cmath>
 #include <unordered_map>
 
 #include "behavior_strategy.h"
 #include "creature.h"
+#include "enums.h"
 #include "field_type.h"
+#include "game_constants.h"
 #include "item.h"
 #include "itype.h"
 #include "mod_manager.h"
-#include "mondeath.h"
 #include "monstergenerator.h"
 #include "output.h"
+#include "point.h"
+#include "string_formatter.h"
 #include "translations.h"
 #include "units.h"
-#include "weakpoint.h"
+
+namespace catacurses
+{
+class window;
+}  // namespace catacurses
 
 static const harvest_id harvest_list_human( "human" );
 
@@ -107,6 +113,7 @@ mon_flag_id mon_flag_ACIDPROOF,
             mon_flag_MECH_DEFENSIVE,
             mon_flag_MECH_RECON_VISION,
             mon_flag_MILKABLE,
+            mon_flag_MIND_SEEING,
             mon_flag_NEMESIS,
             mon_flag_NEVER_WANDER,
             mon_flag_NIGHT_INVISIBILITY,
@@ -119,8 +126,7 @@ mon_flag_id mon_flag_ACIDPROOF,
             mon_flag_NO_NECRO,
             mon_flag_PACIFIST,
             mon_flag_PARALYZEVENOM,
-            mon_flag_PATH_AVOID_DANGER_1,
-            mon_flag_PATH_AVOID_DANGER_2,
+            mon_flag_PATH_AVOID_DANGER,
             mon_flag_PATH_AVOID_FALL,
             mon_flag_PATH_AVOID_FIRE,
             mon_flag_PAY_BOT,
@@ -154,9 +160,9 @@ mon_flag_id mon_flag_ACIDPROOF,
             mon_flag_SUNDEATH,
             mon_flag_SWARMS,
             mon_flag_SWIMS,
+            mon_flag_TEEP_IMMUNE,
             mon_flag_VAMP_VIRUS,
             mon_flag_VENOM,
-            mon_flag_VERMIN,
             mon_flag_WARM,
             mon_flag_WATER_CAMOUFLAGE,
             mon_flag_WEBWALK,
@@ -233,6 +239,7 @@ void set_mon_flag_ids()
     mon_flag_MECH_DEFENSIVE = mon_flag_id( "MECH_DEFENSIVE" );
     mon_flag_MECH_RECON_VISION = mon_flag_id( "MECH_RECON_VISION" );
     mon_flag_MILKABLE = mon_flag_id( "MILKABLE" );
+    mon_flag_MIND_SEEING = mon_flag_id( "MIND_SEEING" );
     mon_flag_NEMESIS = mon_flag_id( "NEMESIS" );
     mon_flag_NEVER_WANDER = mon_flag_id( "NEVER_WANDER" );
     mon_flag_NIGHT_INVISIBILITY = mon_flag_id( "NIGHT_INVISIBILITY" );
@@ -245,8 +252,7 @@ void set_mon_flag_ids()
     mon_flag_NO_NECRO = mon_flag_id( "NO_NECRO" );
     mon_flag_PACIFIST = mon_flag_id( "PACIFIST" );
     mon_flag_PARALYZEVENOM = mon_flag_id( "PARALYZEVENOM" );
-    mon_flag_PATH_AVOID_DANGER_1 = mon_flag_id( "PATH_AVOID_DANGER_1" );
-    mon_flag_PATH_AVOID_DANGER_2 = mon_flag_id( "PATH_AVOID_DANGER_2" );
+    mon_flag_PATH_AVOID_DANGER = mon_flag_id( "PATH_AVOID_DANGER" );
     mon_flag_PATH_AVOID_FALL = mon_flag_id( "PATH_AVOID_FALL" );
     mon_flag_PATH_AVOID_FIRE = mon_flag_id( "PATH_AVOID_FIRE" );
     mon_flag_PAY_BOT = mon_flag_id( "PAY_BOT" );
@@ -278,9 +284,9 @@ void set_mon_flag_ids()
     mon_flag_SUNDEATH = mon_flag_id( "SUNDEATH" );
     mon_flag_SWARMS = mon_flag_id( "SWARMS" );
     mon_flag_SWIMS = mon_flag_id( "SWIMS" );
+    mon_flag_TEEP_IMMUNE = mon_flag_id( "TEEP_IMMUNE" );
     mon_flag_VAMP_VIRUS = mon_flag_id( "VAMP_VIRUS" );
     mon_flag_VENOM = mon_flag_id( "VENOM" );
-    mon_flag_VERMIN = mon_flag_id( "VERMIN" );
     mon_flag_WARM = mon_flag_id( "WARM" );
     mon_flag_WATER_CAMOUFLAGE = mon_flag_id( "WATER_CAMOUFLAGE" );
     mon_flag_WEBWALK = mon_flag_id( "WEBWALK" );
@@ -309,8 +315,6 @@ mtype::mtype()
 
     reproduces = false;
     baby_count = -1;
-    baby_monster = mtype_id::NULL_ID();
-    baby_egg = itype_id::NULL_ID();
 
     biosignatures = false;
     biosig_item = itype_id::NULL_ID();
@@ -319,6 +323,7 @@ mtype::mtype()
     sp_defense = nullptr;
     melee_training_cap = MAX_SKILL;
     harvest = harvest_list_human;
+    decay = harvest_id::NULL_ID();
     luminance = 0;
     bash_skill = 0;
 

@@ -2,8 +2,12 @@
 #ifndef CATA_SRC_STOMACH_H
 #define CATA_SRC_STOMACH_H
 
+#include <cstdint>
 #include <map>
+#include <string>
+#include <utility>
 #include <variant>
+#include <vector>
 
 #include "calendar.h"
 #include "type_id.h"
@@ -20,7 +24,7 @@ using mass = units::quantity<int, units::mass_in_microgram_tag>;
 
 constexpr mass microgram = units::quantity<int, units::mass_in_microgram_tag>( 1, {} );
 constexpr mass milligram = units::quantity<int, units::mass_in_microgram_tag>( 1000, {} );
-constexpr mass gram = units::quantity<int, units::mass_in_microgram_tag>( 1'000'000, {} );
+constexpr mass gram = units::quantity<int, units::mass_in_microgram_tag>( 1000000, {} );
 const std::vector<std::pair<std::string, mass>> mass_units = { {
         { "ug", microgram },
         { "μg", microgram },
@@ -67,6 +71,8 @@ struct nutrients {
             return !( *this == r );
         }
 
+        nutrients operator-();
+
         nutrients &operator+=( const nutrients &r );
         nutrients &operator-=( const nutrients &r );
         nutrients &operator*=( int r );
@@ -90,6 +96,8 @@ struct nutrients {
 
         void serialize( JsonOut & ) const;
         void deserialize( const JsonObject &jo );
+
+        void clear_vitamins();
 
     private:
         /** vitamins potentially provided by this comestible (if any) */
@@ -164,6 +172,10 @@ class stomach_contents
          * @return This stomach's capacity, in units::volume
          */
         units::volume capacity( const Character &owner ) const;
+        // These functions need a ref to the stomach's owner because capacity() does
+        bool would_be_engorged_with( const Character &owner, units::volume intake,
+                                     bool calorie_deficit ) const;
+        bool would_be_full_with( const Character &owner, units::volume intake, bool calorie_deficit ) const;
         // how much stomach capacity you have left before you puke from stuffing your gob
         units::volume stomach_remaining( const Character &owner ) const;
         // how much volume is in the stomach_contents

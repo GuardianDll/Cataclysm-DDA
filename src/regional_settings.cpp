@@ -1,22 +1,26 @@
 #include "regional_settings.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <map>
 #include <memory>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include "debug.h"
 #include "enum_conversions.h"
+#include "flexbuffer_json.h"
 #include "generic_factory.h"
-#include "json.h"
 #include "map_extras.h"
 #include "options.h"
 #include "output.h"
 #include "rng.h"
 #include "string_formatter.h"
-#include "translations.h"
+#include "translation.h"
+
+class mapgendata;
 
 ter_furn_id::ter_furn_id() : ter( ter_str_id::NULL_ID().id() ),
     furn( furn_str_id::NULL_ID().id() ) { }
@@ -173,19 +177,29 @@ static void load_forest_mapgen_settings( const JsonObject &jo,
                 if( forest_biome_ter_keys.empty() ) {
                     forest_biome_jo.throw_error( "Biome is not associated with any terrains." );
                 }
-                std::string first_ter = forest_biome_ter_keys.get_string( 0 );
-                load_forest_biome( forest_biome_jo, forest_mapgen_settings.unfinalized_biomes[first_ter],
-                                   overlay );
-                for( size_t biome_ter_idx = 1; biome_ter_idx < forest_biome_ter_keys.size(); biome_ter_idx++ ) {
+                std::string default_ter_name = member.name();
+                auto default_ter_it = forest_mapgen_settings.unfinalized_biomes.find( default_ter_name );
+                if( default_ter_it == forest_mapgen_settings.unfinalized_biomes.end() ) {
+                    if( overlay ) {
+                        forest_biome_jo.throw_error( "Terrain " + default_ter_name +
+                                                     " is not defined, cannot be used for forest biome." );
+                    }
+                    default_ter_it = forest_mapgen_settings.unfinalized_biomes.emplace( default_ter_name, forest_biome{} ).first;
+                }
+                forest_biome &default_ter = default_ter_it->second;
+                load_forest_biome( forest_biome_jo, default_ter, overlay );
+                for( size_t biome_ter_idx = 0; biome_ter_idx < forest_biome_ter_keys.size(); biome_ter_idx++ ) {
+                    std::string biome_ter_name = forest_biome_ter_keys.get_string( biome_ter_idx );
+                    if( biome_ter_name == default_ter_name ) {
+                        continue;
+                    }
                     forest_mapgen_settings.unfinalized_biomes.insert( std::pair<std::string, forest_biome>
-                            ( forest_biome_ter_keys.get_string( biome_ter_idx ),
-                              forest_mapgen_settings.unfinalized_biomes[first_ter] ) );
+                            ( forest_biome_ter_keys.get_string( biome_ter_idx ), default_ter ) );
                 }
             } else {
                 load_forest_biome( forest_biome_jo, forest_mapgen_settings.unfinalized_biomes[member.name()],
                                    overlay );
             }
-
         }
     }
 }
@@ -401,7 +415,7 @@ static void load_overmap_ocean_settings( const JsonObject &jo,
         overmap_ocean_settings &overmap_ocean_settings,
         const bool strict, const bool overlay )
 {
-    if( !jo.has_object( "overmap_ocean_settings" ) && get_option<bool>( "OVERMAP_PLACE_OCEANS" ) ) {
+    if( !jo.has_object( "overmap_ocean_settings" ) ) {
         if( strict ) {
             jo.throw_error( "OVERMAP_PLACE_OCEANS set to true, but \"overmap_ocean_settings\" not defined in region_settings" );
         }
@@ -577,13 +591,12 @@ void load_region_settings( const JsonObject &jo )
         load_building_types( "parks", new_region.city_spec.parks );
     }
 
-    if( !jo.has_object( "weather" ) ) {
-        if( strict ) {
-            jo.throw_error( "\"weather\": { … } required for default" );
-        }
+    // TODO: Support overwriting only some values in non default regions
+    if( strict && !jo.has_object( "weather" ) ) {
+        jo.throw_error( "\"weather\": { … } required for default" );
     } else {
         JsonObject wjo = jo.get_object( "weather" );
-        new_region.weather = weather_generator::load( wjo );
+        new_region.weather.load( wjo, false );
     }
 
     load_overmap_feature_flag_settings( jo, new_region.overmap_feature_flag, strict, false );
@@ -736,6 +749,11 @@ void apply_region_overlay( const JsonObject &jo, regional_settings &region )
     load_building_types( "houses", region.city_spec.houses );
     load_building_types( "shops", region.city_spec.shops );
     load_building_types( "parks", region.city_spec.parks );
+
+    if( jo.has_object( "weather" ) ) {
+        JsonObject wjo = jo.get_object( "weather" );
+        region.weather.load( wjo, true );
+    }
 
     load_overmap_feature_flag_settings( jo, region.overmap_feature_flag, false, true );
 

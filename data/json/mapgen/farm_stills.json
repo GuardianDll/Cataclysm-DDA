@@ -7,7 +7,6 @@
       [ "farm_stills_8", "farm_stills_7", "farm_stills_6", "farm_stills_5" ],
       [ "farm_stills_12", "farm_stills_11", "farm_stills_10", "farm_stills_9" ]
     ],
-    "weight": 250,
     "object": {
       "fill_ter": "t_floor",
       "rows": [
@@ -84,7 +83,12 @@
         " Ʌ……………………………………………………?  [   [   [    [   [   [  ?……………………………………………………………………………………………………………………Ʌ ",
         " ɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅ "
       ],
-      "palettes": [ "standard_domestic_palette", "standard_domestic_lino_kitchen", "standard_domestic_lino_bathroom" ],
+      "palettes": [
+        "standard_domestic_palette",
+        "standard_domestic_lino_kitchen",
+        "standard_domestic_lino_bathroom",
+        "parametrized_carpets_palette"
+      ],
       "terrain": {
         " ": "t_region_groundcover",
         "…": [ [ "t_region_soil", 25 ], [ "t_region_groundcover", 3 ] ],
@@ -97,9 +101,9 @@
         ",": "t_region_soil",
         "Ʌ": "t_splitrail_fence",
         ".": "t_floor",
-        ";": "t_carpet_red",
-        "h": "t_carpet_red",
-        "f": "t_carpet_red",
+        ";": { "param": "carpet_color_type", "fallback": "t_carpet_red" },
+        "h": { "param": "carpet_color_type", "fallback": "t_carpet_red" },
+        "f": { "param": "carpet_color_type", "fallback": "t_carpet_red" },
         "[": "t_region_tree_fruit",
         "|": "t_wall_w",
         "{": "t_door_metal_locked",

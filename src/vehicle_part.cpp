@@ -1,15 +1,12 @@
 #include "vehicle.h" // IWYU pragma: associated
 
 #include <algorithm>
-#include <cmath>
 #include <memory>
 #include <set>
 #include <string>
 
 #include "ammo.h"
-#include "cata_assert.h"
 #include "character.h"
-#include "color.h"
 #include "debug.h"
 #include "enums.h"
 #include "fault.h"
@@ -17,18 +14,16 @@
 #include "game.h"
 #include "item.h"
 #include "itype.h"
-#include "iuse_actor.h"
-#include "map.h"
 #include "messages.h"
 #include "npc.h"
 #include "pocket_type.h"
+#include "requirements.h"
 #include "ret_val.h"
 #include "string_formatter.h"
 #include "translations.h"
 #include "units.h"
 #include "value_ptr.h"
 #include "veh_type.h"
-#include "vpart_position.h"
 #include "weather.h"
 
 static const ammotype ammo_battery( "battery" );
@@ -104,6 +99,7 @@ void vehicle_part::set_base( item &&new_base )
     if( new_base.typeId() != info().base_item ) {
         debugmsg( "new base '%s' doesn't match part type '%s', this is a bug",
                   new_base.typeId().str(), info().id.str() );
+        base = null_item_reference();
         return;
     }
     base = std::move( new_base );
@@ -360,7 +356,7 @@ void vehicle_part::ammo_unset()
     }
 }
 
-int vehicle_part::ammo_consume( int qty, const tripoint &pos )
+int vehicle_part::ammo_consume( int qty, map *here, const tripoint_bub_ms &pos )
 {
     if( is_tank() && !base.empty() ) {
         const int res = std::min( ammo_remaining(), qty );
@@ -371,7 +367,7 @@ int vehicle_part::ammo_consume( int qty, const tripoint &pos )
         }
         return res;
     }
-    return base.ammo_consume( qty, pos, nullptr );
+    return base.ammo_consume( qty, here, pos, nullptr );
 }
 
 units::energy vehicle_part::consume_energy( const itype_id &ftype, units::energy wanted_energy )
@@ -456,7 +452,7 @@ bool vehicle_part::can_reload( const item &obj ) const
     return ammo_capacity( obj.ammo_type() ) > 0;
 }
 
-void vehicle_part::process_contents( map &here, const tripoint &pos, const bool e_heater )
+void vehicle_part::process_contents( map &here, const tripoint_bub_ms &pos, const bool e_heater )
 {
     // for now we only care about processing food containers since things like
     // fuel don't care about temperature yet
@@ -552,7 +548,7 @@ void vehicle_part::unset_crew()
     crew_id = character_id();
 }
 
-void vehicle_part::reset_target( const tripoint &pos )
+void vehicle_part::reset_target( const tripoint_abs_ms &pos )
 {
     target.first = pos;
     target.second = pos;
@@ -659,7 +655,7 @@ bool vehicle::mod_hp( vehicle_part &pt, int qty )
     return pt.base.mod_damage( -qty * pt.base.max_damage() / dur );
 }
 
-bool vehicle::can_enable( const vehicle_part &pt, bool alert ) const
+bool vehicle::can_enable( map &here, const vehicle_part &pt, bool alert ) const
 {
     if( std::none_of( parts.begin(), parts.end(), [&pt]( const vehicle_part & e ) {
     return &e == &pt;
@@ -671,7 +667,7 @@ bool vehicle::can_enable( const vehicle_part &pt, bool alert ) const
         return false;
     }
 
-    if( pt.info().has_flag( "PLANTER" ) && !warm_enough_to_plant( get_player_character().pos() ) ) {
+    if( pt.info().has_flag( "PLANTER" ) && !warm_enough_to_plant( get_player_character().pos_bub() ) ) {
         if( alert ) {
             add_msg( m_bad, _( "It is too cold to plant anything now." ) );
         }
@@ -680,7 +676,7 @@ bool vehicle::can_enable( const vehicle_part &pt, bool alert ) const
 
     // TODO: check fuel for combustion engines
 
-    if( pt.info().epower < 0_W && fuel_left( fuel_type_battery ) <= 0 ) {
+    if( pt.info().epower < 0_W && fuel_left( here, fuel_type_battery ) <= 0 ) {
         if( alert ) {
             add_msg( m_bad, _( "Insufficient power to enable %s" ), pt.name() );
         }

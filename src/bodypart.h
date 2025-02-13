@@ -5,35 +5,31 @@
 #include <array>
 #include <climits>
 #include <cstddef>
-#include <initializer_list>
-#include <iosfwd>
+#include <map>
 #include <set>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
 #include "damage.h"
 #include "enums.h"
 #include "flat_set.h"
-#include "int_id.h"
-#include "mod_tracker.h"
-#include "string_id.h"
-#include "translations.h"
-#include "type_id.h"
 #include "subbodypart.h"
-#include "localized_comparator.h"
+#include "translation.h"
+#include "type_id.h"
+#include "units.h"
 #include "weather.h"
 
 class JsonObject;
 class JsonOut;
-class JsonValue;
 struct body_part_type;
+struct localized_comparator;
 template <typename E> struct enum_traits;
+template <typename T> class generic_factory;
 
-using bodypart_str_id = string_id<body_part_type>;
 using bodypart_id = int_id<body_part_type>;
 
-extern const bodypart_str_id body_part_bp_null;
 extern const bodypart_str_id body_part_head;
 extern const bodypart_str_id body_part_eyes;
 extern const bodypart_str_id body_part_mouth;
@@ -46,8 +42,6 @@ extern const bodypart_str_id body_part_leg_l;
 extern const bodypart_str_id body_part_foot_l;
 extern const bodypart_str_id body_part_leg_r;
 extern const bodypart_str_id body_part_foot_r;
-
-extern const sub_bodypart_str_id sub_body_part_sub_limb_debug;
 
 // The order is important ; pldata.h has to be in the same order
 enum body_part : int {
@@ -70,8 +64,6 @@ template<>
 struct enum_traits<body_part> {
     static constexpr body_part last = body_part::num_bp;
 };
-
-enum class side : int;
 
 // Drench cache
 enum water_tolerance {
@@ -369,7 +361,10 @@ struct body_part_type {
             return bionic_slots_;
         }
 
+        damage_instance unarmed_damage_instance() const;
         float unarmed_damage( const damage_type_id &dt ) const;
+        // return the total amount of unarmed damage this limb would do
+        float total_unarmed_damage() const;
         float unarmed_arpen( const damage_type_id &dt ) const;
 
         float damage_resistance( const damage_type_id &dt ) const;

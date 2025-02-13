@@ -1,16 +1,15 @@
 #include "behavior.h"
 
 #include <list>
-#include <set>
 #include <unordered_map>
 #include <utility>
 
 #include "behavior_oracle.h"
 #include "behavior_strategy.h"
 #include "cata_assert.h"
-#include "generic_factory.h"
 #include "debug.h"
-#include "json.h"
+#include "flexbuffer_json.h"
+#include "generic_factory.h"
 
 using namespace behavior;
 
