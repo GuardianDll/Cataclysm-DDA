@@ -127,13 +127,6 @@
     "entries": [ { "item": "tea_green_raw", "container-item": "null", "count": [ 10, 40 ] } ]
   },
   {
-    "type": "item_group",
-    "id": "coffee_raw_bag_plastic_20",
-    "subtype": "collection",
-    "container-item": "bag_plastic_small",
-    "entries": [ { "item": "coffee_raw", "container-item": "null", "count": 20 } ]
-  },
-  {
     "id": "raw_coffee_in_container",
     "type": "item_group",
     "subtype": "distribution",

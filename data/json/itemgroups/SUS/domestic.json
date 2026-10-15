@@ -288,8 +288,7 @@
       { "item": "yarn", "prob": 60, "charges": [ 60, 200 ] },
       { "item": "razor_blade", "count": [ 1, 4 ], "prob": 50 },
       { "item": "cotton_patchwork", "count": [ 3, 4 ], "prob": 50 },
-      { "item": "thread", "prob": 40 },
-      { "item": "thread", "prob": 30 },
+      { "group": "thread_used", "prob": 60 },
       { "item": "sewing_kit", "prob": 25, "charges": [ 50, 150 ] },
       { "item": "sewing_machine", "prob": 25 },
       { "group": "solder_wire_spool_part", "prob": 40 },
@@ -576,11 +575,7 @@
     "entries": [
       { "distribution": [ { "item": "coffeemaker", "prob": 90 } ], "prob": 75 },
       {
-        "distribution": [
-          { "prob": 30, "item": "coffee_raw" },
-          { "prob": 40, "item": "instant_coffee", "count": [ 1, 5 ] },
-          { "prob": 30, "group": "raw_coffee_in_container" }
-        ],
+        "distribution": [ { "prob": 40, "item": "instant_coffee", "count": [ 1, 5 ] }, { "prob": 60, "group": "raw_coffee_in_container" } ],
         "prob": 80
       },
       { "count": [ 1, 10 ], "prob": 80, "group": "tea_raw_bag_plastic_33" },

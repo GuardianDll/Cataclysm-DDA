@@ -100,7 +100,7 @@
       { "group": "glue_weak_domestic", "prob": 25 },
       { "group": "glue_strong_domestic", "prob": 20 },
       { "item": "flashlight", "prob": 25, "charges": [ 0, 300 ] },
-      [ "thread", 20 ],
+      { "group": "thread_spool_boxed", "prob": 20 },
       { "group": "box_of_batteries_unopened", "prob": 25 },
       { "item": "candle", "prob": 25, "charges": [ 0, 100 ] },
       { "group": "small_candles_in_box", "prob": 10 },
@@ -174,7 +174,7 @@
       { "prob": 15, "group": "licorice_bag_plastic_4" },
       { "group": "soda_in_small_container", "prob": 470 },
       { "group": "snacks", "prob": 560 },
-      [ "coffee_raw", 70 ],
+      { "group": "raw_coffee_in_container_full", "prob": 70 },
       [ "water_clean", 90 ],
       [ "water_mineral", 10 ],
       [ "almond_milk", 20 ],
@@ -655,12 +655,11 @@
       { "group": "tea_green_raw_bag_plastic_33", "prob": 25 },
       [ "cookies", 25 ],
       [ "brownie", 25 ],
-      [ "coffee_raw", 90 ],
+      { "group": "raw_coffee_in_container_full", "prob": 90 },
       [ "ceramic_cup", 10 ],
       [ "ceramic_plate", 10 ],
       [ "choco_coffee_beans", 60 ],
-      [ "coffee_syrup", 25 ],
-      [ "coffee_raw", 25 ]
+      [ "coffee_syrup", 25 ]
     ]
   },
   {
@@ -1926,7 +1925,7 @@
       [ "neoprene", 5 ],
       [ "felt_patch", 10 ],
       [ "fur", 10 ],
-      [ "thread", 15 ],
+      { "group": "thread_spool_boxed", "prob": 15 },
       [ "yarn", 15 ],
       [ "sinew", 15 ],
       { "group": "duct_tape_roll", "prob": 15 },
