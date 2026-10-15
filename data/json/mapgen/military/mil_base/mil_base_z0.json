@@ -534,7 +534,7 @@
         { "group": "oatmeal_box_1lb", "x": [ 45, 46 ], "y": 53, "chance": 75, "repeat": [ 50, 150 ] },
         { "group": "flour_bag_paper", "x": [ 43, 44 ], "y": 53, "chance": 75, "repeat": [ 50, 150 ] },
         { "group": "cornmeal_box_full", "x": [ 41, 42 ], "y": 53, "chance": 75, "repeat": [ 50, 150 ] },
-        { "group": "coffee_raw_bag_plastic_20", "x": 40, "y": 53, "chance": 75, "repeat": [ 50, 150 ] },
+        { "group": "raw_coffee_in_container", "x": 40, "y": 53, "chance": 75, "repeat": [ 50, 150 ] },
         { "group": "tea_raw_bag_plastic_33", "x": 39, "y": 53, "chance": 75, "repeat": [ 50, 150 ] },
         { "group": "sugar_various", "x": 38, "y": 53, "chance": 75, "repeat": [ 50, 150 ] },
         { "group": "salt_various", "x": 37, "y": 53, "chance": 75, "repeat": [ 50, 150 ] },

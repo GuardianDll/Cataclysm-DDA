@@ -388,7 +388,7 @@
       { "item": "ceramic_plate", "prob": 15 },
       { "prob": 75, "group": "bag_chips" },
       { "prob": 50, "group": "choco_coffee_beans_bag_plastic_5" },
-      { "prob": 50, "group": "coffee_raw_bag_plastic_20" },
+      { "prob": 50, "group": "raw_coffee_in_container_full" },
       { "item": "coffee_syrup", "prob": 15 },
       { "prob": 10, "group": "licorice_bag_plastic_4" },
       { "prob": 35, "group": "cookies_box_snack_4" },
@@ -453,7 +453,7 @@
     "subtype": "distribution",
     "entries": [
       { "item": "bottle_glass", "prob": 15 },
-      { "prob": 25, "group": "coffee_raw_bag_plastic_20" },
+      { "prob": 25, "group": "cofraw_coffee_in_container_fullfee_paper_bag" },
       { "item": "coffee_syrup", "charges": [ 1, -1 ], "prob": 25 },
       { "item": "cup_plastic", "prob": 35 },
       { "item": "jug_plastic", "prob": 15 }
@@ -756,7 +756,7 @@
       { "item": "marshmallow_fluff", "prob": 35 },
       { "prob": 40, "group": "pickle_jar_glass_sealed_2" },
       { "item": "coffee_syrup", "prob": 35 },
-      { "prob": 45, "group": "coffee_raw_bag_plastic_20" },
+      { "prob": 45, "group": "raw_coffee_in_container" },
       { "prob": 45, "group": "tea_raw_bag_plastic_33" },
       { "prob": 20, "group": "tea_green_raw_bag_plastic_33" },
       { "prob": 50, "group": "salt_various_full" },

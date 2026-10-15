@@ -174,7 +174,7 @@
       { "prob": 15, "group": "licorice_bag_plastic_4" },
       { "group": "soda_in_small_container", "prob": 470 },
       { "group": "snacks", "prob": 560 },
-      [ "coffee_raw", 70 ],
+      { "group": "raw_coffee_in_container_full", "prob": 70 },
       [ "water_clean", 90 ],
       [ "water_mineral", 10 ],
       [ "almond_milk", 20 ],
@@ -655,12 +655,11 @@
       { "group": "tea_green_raw_bag_plastic_33", "prob": 25 },
       [ "cookies", 25 ],
       [ "brownie", 25 ],
-      [ "coffee_raw", 90 ],
+      { "group": "raw_coffee_in_container_full", "prob": 90 },
       [ "ceramic_cup", 10 ],
       [ "ceramic_plate", 10 ],
       [ "choco_coffee_beans", 60 ],
-      [ "coffee_syrup", 25 ],
-      [ "coffee_raw", 25 ]
+      [ "coffee_syrup", 25 ]
     ]
   },
   {
